@@ -30,15 +30,20 @@ export const nearbyPharmaciesQuery = (f: NearbyFilters) =>
   queryOptions({
     queryKey: ["nearby", f],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("nearest_pharmacies", {
+      const args: {
+        p_lat: number; p_lng: number; p_search?: string; p_max_km?: number;
+        p_on_duty: boolean; p_with_phone: boolean; p_limit: number;
+      } = {
         p_lat: f.lat,
         p_lng: f.lng,
-        p_search: f.search?.trim() || undefined,
-        p_max_km: f.maxKm ?? undefined,
         p_on_duty: f.onDuty ?? false,
         p_with_phone: f.withPhone ?? false,
         p_limit: f.limit ?? 40,
-      });
+      };
+      const term = f.search?.trim();
+      if (term) args.p_search = term;
+      if (f.maxKm != null) args.p_max_km = f.maxKm;
+      const { data, error } = await supabase.rpc("nearest_pharmacies", args);
       if (error) throw error;
       return (data ?? []) as NearbyPharmacy[];
     },
