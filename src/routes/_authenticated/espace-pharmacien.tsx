@@ -426,7 +426,10 @@ function AddStock({ pharmacyId, onAdded, existing }: { pharmacyId: string; onAdd
       quantity: Math.max(0, parseInt(qty, 10) || 0),
       price_fcfa: price ? Math.max(0, parseInt(price, 10) || 0) : null,
     });
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("Médicament ajouté au stock");
     setSelected(null);
     setQ("");
@@ -444,11 +447,14 @@ function AddStock({ pharmacyId, onAdded, existing }: { pharmacyId: string; onAdd
         dosage: newMed.dosage.trim() || null,
         form: newMed.form.trim() || null,
         package: newMed.package.trim() || null,
-        created_by: u.user?.id,
+        created_by: u.user?.id ?? null,
       })
       .select()
       .single();
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     setSelected(data);
     setCreating(false);
     setNewMed({ name: "", dosage: "", form: "", package: "" });
