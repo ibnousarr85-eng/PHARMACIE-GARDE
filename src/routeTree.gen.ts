@@ -10,33 +10,89 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MedicamentsIndexRouteImport } from './routes/medicaments.index'
+import { Route as MedicamentsIdRouteImport } from './routes/medicaments.$id'
+import { Route as PharmaciesIndexRouteImport } from './routes/pharmacies.index'
+import { Route as PharmaciesIdRouteImport } from './routes/pharmacies.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MedicamentsIndexRoute = MedicamentsIndexRouteImport.update({
+  id: '/medicaments/',
+  path: '/medicaments/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MedicamentsIdRoute = MedicamentsIdRouteImport.update({
+  id: '/medicaments/$id',
+  path: '/medicaments/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PharmaciesIndexRoute = PharmaciesIndexRouteImport.update({
+  id: '/pharmacies/',
+  path: '/pharmacies/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PharmaciesIdRoute = PharmaciesIdRouteImport.update({
+  id: '/pharmacies/$id',
+  path: '/pharmacies/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/medicaments/$id': typeof MedicamentsIdRoute
+  '/pharmacies/$id': typeof PharmaciesIdRoute
+  '/medicaments/': typeof MedicamentsIndexRoute
+  '/pharmacies/': typeof PharmaciesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/medicaments/$id': typeof MedicamentsIdRoute
+  '/pharmacies/$id': typeof PharmaciesIdRoute
+  '/medicaments': typeof MedicamentsIndexRoute
+  '/pharmacies': typeof PharmaciesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/medicaments/$id': typeof MedicamentsIdRoute
+  '/pharmacies/$id': typeof PharmaciesIdRoute
+  '/medicaments/': typeof MedicamentsIndexRoute
+  '/pharmacies/': typeof PharmaciesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/medicaments/$id'
+    | '/pharmacies/$id'
+    | '/medicaments/'
+    | '/pharmacies/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/medicaments/$id'
+    | '/pharmacies/$id'
+    | '/medicaments'
+    | '/pharmacies'
+  id:
+    | '__root__'
+    | '/'
+    | '/medicaments/$id'
+    | '/pharmacies/$id'
+    | '/medicaments/'
+    | '/pharmacies/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  MedicamentsIdRoute: typeof MedicamentsIdRoute
+  PharmaciesIdRoute: typeof PharmaciesIdRoute
+  MedicamentsIndexRoute: typeof MedicamentsIndexRoute
+  PharmaciesIndexRoute: typeof PharmaciesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +104,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/medicaments/': {
+      id: '/medicaments/'
+      path: '/medicaments'
+      fullPath: '/medicaments/'
+      preLoaderRoute: typeof MedicamentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/medicaments/$id': {
+      id: '/medicaments/$id'
+      path: '/medicaments/$id'
+      fullPath: '/medicaments/$id'
+      preLoaderRoute: typeof MedicamentsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pharmacies/': {
+      id: '/pharmacies/'
+      path: '/pharmacies'
+      fullPath: '/pharmacies/'
+      preLoaderRoute: typeof PharmaciesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pharmacies/$id': {
+      id: '/pharmacies/$id'
+      path: '/pharmacies/$id'
+      fullPath: '/pharmacies/$id'
+      preLoaderRoute: typeof PharmaciesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  MedicamentsIdRoute: MedicamentsIdRoute,
+  PharmaciesIdRoute: PharmaciesIdRoute,
+  MedicamentsIndexRoute: MedicamentsIndexRoute,
+  PharmaciesIndexRoute: PharmaciesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
