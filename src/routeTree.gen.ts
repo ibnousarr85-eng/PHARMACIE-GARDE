@@ -10,33 +10,123 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedEspacePharmacienRouteImport } from './routes/_authenticated/espace-pharmacien'
+import { Route as MedicamentsIndexRouteImport } from './routes/medicaments.index'
+import { Route as MedicamentsIdRouteImport } from './routes/medicaments.$id'
+import { Route as PharmaciesIndexRouteImport } from './routes/pharmacies.index'
+import { Route as PharmaciesIdRouteImport } from './routes/pharmacies.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedEspacePharmacienRoute =
+  AuthenticatedEspacePharmacienRouteImport.update({
+    id: '/espace-pharmacien',
+    path: '/espace-pharmacien',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const MedicamentsIndexRoute = MedicamentsIndexRouteImport.update({
+  id: '/medicaments/',
+  path: '/medicaments/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MedicamentsIdRoute = MedicamentsIdRouteImport.update({
+  id: '/medicaments/$id',
+  path: '/medicaments/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PharmaciesIndexRoute = PharmaciesIndexRouteImport.update({
+  id: '/pharmacies/',
+  path: '/pharmacies/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PharmaciesIdRoute = PharmaciesIdRouteImport.update({
+  id: '/pharmacies/$id',
+  path: '/pharmacies/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/espace-pharmacien': typeof AuthenticatedEspacePharmacienRoute
+  '/medicaments/$id': typeof MedicamentsIdRoute
+  '/pharmacies/$id': typeof PharmaciesIdRoute
+  '/medicaments/': typeof MedicamentsIndexRoute
+  '/pharmacies/': typeof PharmaciesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/espace-pharmacien': typeof AuthenticatedEspacePharmacienRoute
+  '/medicaments/$id': typeof MedicamentsIdRoute
+  '/pharmacies/$id': typeof PharmaciesIdRoute
+  '/medicaments': typeof MedicamentsIndexRoute
+  '/pharmacies': typeof PharmaciesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/espace-pharmacien': typeof AuthenticatedEspacePharmacienRoute
+  '/medicaments/$id': typeof MedicamentsIdRoute
+  '/pharmacies/$id': typeof PharmaciesIdRoute
+  '/medicaments/': typeof MedicamentsIndexRoute
+  '/pharmacies/': typeof PharmaciesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/espace-pharmacien'
+    | '/medicaments/$id'
+    | '/pharmacies/$id'
+    | '/medicaments/'
+    | '/pharmacies/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/espace-pharmacien'
+    | '/medicaments/$id'
+    | '/pharmacies/$id'
+    | '/medicaments'
+    | '/pharmacies'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/espace-pharmacien'
+    | '/medicaments/$id'
+    | '/pharmacies/$id'
+    | '/medicaments/'
+    | '/pharmacies/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  MedicamentsIdRoute: typeof MedicamentsIdRoute
+  PharmaciesIdRoute: typeof PharmaciesIdRoute
+  MedicamentsIndexRoute: typeof MedicamentsIndexRoute
+  PharmaciesIndexRoute: typeof PharmaciesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +138,77 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/espace-pharmacien': {
+      id: '/_authenticated/espace-pharmacien'
+      path: '/espace-pharmacien'
+      fullPath: '/espace-pharmacien'
+      preLoaderRoute: typeof AuthenticatedEspacePharmacienRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/medicaments/': {
+      id: '/medicaments/'
+      path: '/medicaments'
+      fullPath: '/medicaments/'
+      preLoaderRoute: typeof MedicamentsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/medicaments/$id': {
+      id: '/medicaments/$id'
+      path: '/medicaments/$id'
+      fullPath: '/medicaments/$id'
+      preLoaderRoute: typeof MedicamentsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pharmacies/': {
+      id: '/pharmacies/'
+      path: '/pharmacies'
+      fullPath: '/pharmacies/'
+      preLoaderRoute: typeof PharmaciesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pharmacies/$id': {
+      id: '/pharmacies/$id'
+      path: '/pharmacies/$id'
+      fullPath: '/pharmacies/$id'
+      preLoaderRoute: typeof PharmaciesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedEspacePharmacienRoute: typeof AuthenticatedEspacePharmacienRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedEspacePharmacienRoute: AuthenticatedEspacePharmacienRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  MedicamentsIdRoute: MedicamentsIdRoute,
+  PharmaciesIdRoute: PharmaciesIdRoute,
+  MedicamentsIndexRoute: MedicamentsIndexRoute,
+  PharmaciesIndexRoute: PharmaciesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
