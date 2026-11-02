@@ -14,13 +14,193 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      medicines: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          dosage: string | null
+          form: string | null
+          id: string
+          name: string
+          package: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          dosage?: string | null
+          form?: string | null
+          id?: string
+          name: string
+          package?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          dosage?: string | null
+          form?: string | null
+          id?: string
+          name?: string
+          package?: string | null
+        }
+        Relationships: []
+      }
+      pharmacies: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          id: string
+          is_on_duty: boolean
+          lat: number
+          lng: number
+          locality: string | null
+          name: string
+          on_duty_until: string | null
+          opening_hours: string | null
+          osm_id: string | null
+          owner_id: string | null
+          phone: string | null
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          is_on_duty?: boolean
+          lat: number
+          lng: number
+          locality?: string | null
+          name: string
+          on_duty_until?: string | null
+          opening_hours?: string | null
+          osm_id?: string | null
+          owner_id?: string | null
+          phone?: string | null
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          is_on_duty?: boolean
+          lat?: number
+          lng?: number
+          locality?: string | null
+          name?: string
+          on_duty_until?: string | null
+          opening_hours?: string | null
+          osm_id?: string | null
+          owner_id?: string | null
+          phone?: string | null
+          source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pharmacy_stock: {
+        Row: {
+          medicine_id: string
+          pharmacy_id: string
+          price_fcfa: number | null
+          quantity: number
+          updated_at: string
+        }
+        Insert: {
+          medicine_id: string
+          pharmacy_id: string
+          price_fcfa?: number | null
+          quantity?: number
+          updated_at?: string
+        }
+        Update: {
+          medicine_id?: string
+          pharmacy_id?: string
+          price_fcfa?: number | null
+          quantity?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pharmacy_stock_medicine_id_fkey"
+            columns: ["medicine_id"]
+            isOneToOne: false
+            referencedRelation: "medicines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pharmacy_stock_pharmacy_id_fkey"
+            columns: ["pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      claim_pharmacy: { Args: { p_pharmacy_id: string }; Returns: undefined }
+      distance_km: {
+        Args: { lat1: number; lat2: number; lng1: number; lng2: number }
+        Returns: number
+      }
+      nearest_pharmacies: {
+        Args: {
+          p_lat: number
+          p_limit?: number
+          p_lng: number
+          p_max_km?: number
+          p_on_duty?: boolean
+          p_search?: string
+          p_with_phone?: boolean
+        }
+        Returns: {
+          address: string
+          city: string
+          distance_km: number
+          id: string
+          lat: number
+          lng: number
+          locality: string
+          name: string
+          on_duty: boolean
+          on_duty_until: string
+          opening_hours: string
+          phone: string
+        }[]
+      }
+      pharmacies_with_medicine: {
+        Args: {
+          p_lat: number
+          p_limit?: number
+          p_lng: number
+          p_medicine_id: string
+        }
+        Returns: {
+          address: string
+          city: string
+          distance_km: number
+          id: string
+          lat: number
+          lng: number
+          locality: string
+          name: string
+          on_duty: boolean
+          phone: string
+          price_fcfa: number
+          quantity: number
+          stock_updated_at: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
