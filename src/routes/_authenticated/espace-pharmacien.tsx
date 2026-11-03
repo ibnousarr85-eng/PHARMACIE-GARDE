@@ -14,7 +14,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { DEFAULT_LOCATION, useUserLocation } from "@/lib/location";
 import { medicineSearchQuery, nearbyPharmaciesQuery, pharmacyStockQuery } from "@/lib/pharmacies";
 import { formatDistance } from "@/lib/format";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Tables, TablesInsert } from "@/integrations/supabase/types";
+import { useIsAdmin } from "@/lib/admin";
 
 export const Route = createFileRoute("/_authenticated/espace-pharmacien")({
   head: () => ({
@@ -32,17 +33,6 @@ export const Route = createFileRoute("/_authenticated/espace-pharmacien")({
 
 type Pharmacy = Tables<"pharmacies">;
 type PharmacyRequest = Tables<"pharmacy_requests"> & { pharmacy: { name: string; city: string | null } | null };
-
-export function useIsAdmin(userId: string) {
-  return useQuery({
-    queryKey: ["is-admin", userId],
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
-      if (error) throw error;
-      return data === true;
-    },
-  });
-}
 
 function Dashboard() {
   const { user } = Route.useRouteContext();
@@ -177,8 +167,8 @@ function PendingRequest({ request, userId }: { request: PharmacyRequest; userId:
 function useSubmitRequest(userId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (row: Omit<Tables<"pharmacy_requests">, "id" | "user_id" | "contact_email" | "status" | "admin_note" | "reviewed_by" | "reviewed_at" | "created_at"> | { pharmacy_id: string; message: string | null }) => {
-      const { error } = await supabase.from("pharmacy_requests").insert(row as never);
+    mutationFn: async (row: TablesInsert<"pharmacy_requests">) => {
+      const { error } = await supabase.from("pharmacy_requests").insert(row);
       if (error) throw error;
     },
     onSuccess: () => {
