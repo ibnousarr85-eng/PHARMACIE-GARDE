@@ -2,13 +2,14 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Loader2, LocateFixed, LogOut, Plus, Save, Trash2 } from "lucide-react";
-import { AppShell } from "@/components/garde/AppShell";
+import { Clock, Loader2, LocateFixed, LogOut, Plus, Save, ShieldCheck, Trash2, XCircle } from "lucide-react";
+import { AppShell, BackLink } from "@/components/garde/AppShell";
 import { SearchInput } from "@/components/garde/SearchInput";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { DEFAULT_LOCATION, useUserLocation } from "@/lib/location";
 import { medicineSearchQuery, nearbyPharmaciesQuery, pharmacyStockQuery } from "@/lib/pharmacies";
@@ -30,10 +31,24 @@ export const Route = createFileRoute("/_authenticated/espace-pharmacien")({
 });
 
 type Pharmacy = Tables<"pharmacies">;
+type PharmacyRequest = Tables<"pharmacy_requests"> & { pharmacy: { name: string; city: string | null } | null };
+
+export function useIsAdmin(userId: string) {
+  return useQuery({
+    queryKey: ["is-admin", userId],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
+      if (error) throw error;
+      return data === true;
+    },
+  });
+}
 
 function Dashboard() {
   const { user } = Route.useRouteContext();
   const navigate = useNavigate();
+  const qc = useQueryClient();
+  const { data: isAdmin } = useIsAdmin(user.id);
   const { data: pharmacy, isLoading } = useQuery({
     queryKey: ["my-pharmacy", user.id],
     queryFn: async () => {
@@ -42,30 +57,71 @@ function Dashboard() {
       return data;
     },
   });
+  const { data: request, isLoading: loadingRequest } = useQuery({
+    queryKey: ["my-request", user.id],
+    enabled: !isLoading && !pharmacy,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("pharmacy_requests")
+        .select("*, pharmacy:pharmacies(name, city)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data as PharmacyRequest | null;
+    },
+  });
+
+  const signOut = async () => {
+    await qc.cancelQueries();
+    qc.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  };
 
   return (
     <AppShell>
-      <div className="flex items-center justify-between">
-        <h1 className="text-[28px] font-extrabold tracking-tight text-foreground">Espace pharmacien</h1>
-        <button
-          type="button"
-          onClick={async () => {
-            await supabase.auth.signOut();
-            navigate({ to: "/" });
-          }}
-          className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground"
-        >
+      <div className="flex items-center justify-between gap-3">
+        <BackLink to="/" />
+        <button type="button" onClick={signOut} className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground">
           <LogOut className="h-4 w-4" /> Déconnexion
         </button>
       </div>
-      <p className="mb-6 text-sm text-muted-foreground">{user.email}</p>
+      <h1 className="mt-3 text-[28px] font-extrabold tracking-tight text-foreground">Espace pharmacien</h1>
+      <p className="mb-5 truncate text-sm text-muted-foreground">{user.email}</p>
 
-      {isLoading ? (
+      {isAdmin && (
+        <Link
+          to="/admin"
+          className="mb-5 flex items-center gap-3 rounded-3xl border border-primary/30 bg-secondary p-4 font-semibold text-secondary-foreground"
+        >
+          <ShieldCheck className="h-6 w-6 shrink-0" />
+          <span className="min-w-0 flex-1">Administration : valider les demandes des pharmaciens</span>
+          <span aria-hidden>→</span>
+        </Link>
+      )}
+
+      {isLoading || (!pharmacy && loadingRequest) ? (
         <Loader2 className="mx-auto h-6 w-6 animate-spin text-primary" />
       ) : pharmacy ? (
         <ManagePharmacy pharmacy={pharmacy} />
+      ) : request?.status === "pending" ? (
+        <PendingRequest request={request} userId={user.id} />
       ) : (
-        <ClaimPharmacy userId={user.id} />
+        <>
+          {request?.status === "rejected" && (
+            <div className="mb-5 rounded-3xl border border-destructive/30 bg-destructive/5 p-5">
+              <p className="flex items-center gap-2 font-bold text-destructive">
+                <XCircle className="h-5 w-5" /> Demande refusée
+              </p>
+              <p className="mt-1 text-sm text-foreground/85">
+                {request.admin_note ?? "Votre dernière demande n'a pas été validée."} Vous pouvez envoyer une nouvelle demande.
+              </p>
+            </div>
+          )}
+          <RequestPharmacy userId={user.id} />
+        </>
       )}
     </AppShell>
   );
@@ -80,37 +136,91 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-/* ---------- Claim or add a pharmacy ---------- */
+/* ---------- Pending request ---------- */
 
-function ClaimPharmacy({ userId }: { userId: string }) {
+function PendingRequest({ request, userId }: { request: PharmacyRequest; userId: string }) {
   const qc = useQueryClient();
+  const cancel = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("pharmacy_requests").delete().eq("id", request.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Demande annulée");
+      qc.invalidateQueries({ queryKey: ["my-request", userId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+  const name = request.pharmacy?.name ?? request.name;
+  return (
+    <div className="rounded-3xl bg-secondary p-5">
+      <p className="flex items-center gap-2 text-sm font-semibold text-secondary-foreground">
+        <Clock className="h-4 w-4" /> Demande en attente de validation
+      </p>
+      <p className="mt-1 text-2xl font-extrabold text-foreground">{name}</p>
+      <p className="mt-2 text-sm text-foreground/85">
+        Un administrateur GARDE vérifie que vous êtes bien responsable de cette officine. Vous pourrez gérer le stock et la
+        garde dès que votre demande sera validée.
+      </p>
+      <p className="mt-2 text-xs text-muted-foreground">
+        Envoyée le {new Date(request.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+      </p>
+      <Button variant="outline" onClick={() => cancel.mutate()} disabled={cancel.isPending} className="mt-4 w-full rounded-xl">
+        Annuler la demande
+      </Button>
+    </div>
+  );
+}
+
+/* ---------- Request an existing pharmacy or a new one ---------- */
+
+function useSubmitRequest(userId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (row: Omit<Tables<"pharmacy_requests">, "id" | "user_id" | "contact_email" | "status" | "admin_note" | "reviewed_by" | "reviewed_at" | "created_at"> | { pharmacy_id: string; message: string | null }) => {
+      const { error } = await supabase.from("pharmacy_requests").insert(row as never);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Demande envoyée. Un administrateur va la vérifier.");
+      qc.invalidateQueries({ queryKey: ["my-request", userId] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+}
+
+function RequestPharmacy({ userId }: { userId: string }) {
   const { location, requestGps } = useUserLocation();
   const loc = location ?? DEFAULT_LOCATION;
   const [q, setQ] = useState("");
   const [debounced, setDebounced] = useState("");
+  const [message, setMessage] = useState("");
   useEffect(() => {
     const t = setTimeout(() => setDebounced(q), 300);
     return () => clearTimeout(t);
   }, [q]);
   const { data } = useQuery(nearbyPharmaciesQuery({ lat: loc.lat, lng: loc.lng, search: debounced, limit: 15 }));
-
-  const claim = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.rpc("claim_pharmacy", { p_pharmacy_id: id });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success("Pharmacie associée à votre compte");
-      qc.invalidateQueries({ queryKey: ["my-pharmacy", userId] });
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
+  const submit = useSubmitRequest(userId);
 
   return (
     <>
+      <div className="mb-5 rounded-3xl bg-secondary p-5 text-sm text-foreground/85">
+        Pour protéger les patients, chaque pharmacien est vérifié par un administrateur GARDE avant de pouvoir gérer une
+        officine.
+      </div>
+      <Section title="Vos informations pour la vérification">
+        <Label htmlFor="verif">Numéro d'inscription à l'Ordre, téléphone, fonction…</Label>
+        <Textarea
+          id="verif"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Ex : Dr Awa Ndiaye, pharmacienne titulaire, Ordre n° …, joignable au 77 …"
+          className="mt-1 min-h-24 rounded-xl"
+        />
+      </Section>
       <Section title="1. Trouvez votre pharmacie">
         <p className="mb-3 text-sm text-muted-foreground">
-          Recherchez votre officine parmi les pharmacies du Sénégal déjà référencées, puis associez-la à votre compte.
+          Recherchez votre officine parmi les pharmacies du Sénégal déjà référencées, puis demandez à la gérer.
         </p>
         <SearchInput value={q} onChange={(e) => setQ(e.target.value)} placeholder="Nom de votre pharmacie…" />
         <button type="button" onClick={() => requestGps()} className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-primary">
@@ -119,57 +229,53 @@ function ClaimPharmacy({ userId }: { userId: string }) {
         <ul className="mt-3 divide-y divide-border">
           {data?.map((p) => (
             <li key={p.id} className="flex items-center justify-between gap-3 py-3">
-              <div>
+              <div className="min-w-0">
                 <p className="font-semibold text-foreground">{p.name}</p>
                 <p className="text-xs text-muted-foreground">
                   {p.address ?? p.city} · {formatDistance(p.distance_km)}
                 </p>
               </div>
-              <Button size="sm" disabled={claim.isPending} onClick={() => claim.mutate(p.id)} className="rounded-xl">
+              <Button
+                size="sm"
+                disabled={submit.isPending}
+                onClick={() => submit.mutate({ pharmacy_id: p.id, message: message.trim() || null })}
+                className="shrink-0 rounded-xl"
+              >
                 C'est la mienne
               </Button>
             </li>
           ))}
         </ul>
       </Section>
-      <AddPharmacy userId={userId} />
+      <AddPharmacy message={message} submit={submit} />
     </>
   );
 }
 
-function AddPharmacy({ userId }: { userId: string }) {
-  const qc = useQueryClient();
+function AddPharmacy({ message, submit }: { message: string; submit: ReturnType<typeof useSubmitRequest> }) {
   const { location, requestGps, locating } = useUserLocation();
   const [form, setForm] = useState({ name: "", address: "", city: "", phone: "", opening_hours: "" });
-  const add = useMutation({
-    mutationFn: async () => {
-      if (!location || location.source !== "gps") throw new Error("Activez le GPS depuis votre pharmacie pour la positionner.");
-      const { error } = await supabase.from("pharmacies").insert({
-        name: form.name.trim(),
-        address: form.address.trim() || null,
-        city: form.city.trim() || null,
-        phone: form.phone.trim() || null,
-        opening_hours: form.opening_hours.trim() || null,
-        lat: location.lat,
-        lng: location.lng,
-        owner_id: userId,
-        source: "pharmacist",
-      });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success("Pharmacie ajoutée");
-      qc.invalidateQueries({ queryKey: ["my-pharmacy", userId] });
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
 
   return (
-    <Section title="2. Elle n'est pas dans la liste ? Ajoutez-la">
+    <Section title="2. Elle n'est pas dans la liste ? Proposez-la">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          add.mutate();
+          if (!location || location.source !== "gps") {
+            toast.error("Activez le GPS depuis votre pharmacie pour la positionner.");
+            return;
+          }
+          submit.mutate({
+            pharmacy_id: null,
+            name: form.name.trim(),
+            address: form.address.trim() || null,
+            city: form.city.trim() || null,
+            phone: form.phone.trim() || null,
+            opening_hours: form.opening_hours.trim() || null,
+            lat: location.lat,
+            lng: location.lng,
+            message: message.trim() || null,
+          });
         }}
         className="space-y-3"
       >
@@ -187,8 +293,8 @@ function AddPharmacy({ userId }: { userId: string }) {
           {locating ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
           {location?.source === "gps" ? "Position GPS enregistrée ✓" : "Enregistrer la position GPS (sur place)"}
         </Button>
-        <Button type="submit" disabled={add.isPending || !form.name.trim()} className="h-12 w-full rounded-2xl font-bold">
-          Ajouter ma pharmacie
+        <Button type="submit" disabled={submit.isPending || !form.name.trim()} className="h-12 w-full rounded-2xl font-bold">
+          Envoyer ma demande
         </Button>
       </form>
     </Section>
