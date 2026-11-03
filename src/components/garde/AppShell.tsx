@@ -78,7 +78,7 @@ export function BottomNav() {
                 >
                   <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 2} />
                 </span>
-                <span className="w-full truncate text-center">{label}</span>
+                <span className="w-full text-balance text-center">{label}</span>
               </Link>
             </li>
           );
