@@ -107,10 +107,11 @@ function RequestCard({ request: r }: { request: Request }) {
   const [note, setNote] = useState("");
   const review = useMutation({
     mutationFn: async (approve: boolean) => {
+      const trimmed = note.trim();
       const { error } = await supabase.rpc("review_pharmacy_request", {
         p_request_id: r.id,
         p_approve: approve,
-        p_note: note.trim() || undefined,
+        ...(trimmed ? { p_note: trimmed } : {}),
       });
       if (error) throw error;
       return approve;
