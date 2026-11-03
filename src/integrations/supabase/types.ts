@@ -104,6 +104,74 @@ export type Database = {
         }
         Relationships: []
       }
+      pharmacy_requests: {
+        Row: {
+          address: string | null
+          admin_note: string | null
+          city: string | null
+          contact_email: string | null
+          created_at: string
+          id: string
+          lat: number | null
+          lng: number | null
+          message: string | null
+          name: string | null
+          opening_hours: string | null
+          pharmacy_id: string | null
+          phone: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          admin_note?: string | null
+          city?: string | null
+          contact_email?: string | null
+          created_at?: string
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          message?: string | null
+          name?: string | null
+          opening_hours?: string | null
+          pharmacy_id?: string | null
+          phone?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+        }
+        Update: {
+          address?: string | null
+          admin_note?: string | null
+          city?: string | null
+          contact_email?: string | null
+          created_at?: string
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          message?: string | null
+          name?: string | null
+          opening_hours?: string | null
+          pharmacy_id?: string | null
+          phone?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pharmacy_requests_pharmacy_id_fkey"
+            columns: ["pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pharmacy_stock: {
         Row: {
           medicine_id: string
@@ -143,15 +211,39 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      claim_pharmacy: { Args: { p_pharmacy_id: string }; Returns: undefined }
       distance_km: {
         Args: { lat1: number; lat2: number; lng1: number; lng2: number }
         Returns: number
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
       }
       nearest_pharmacies: {
         Args: {
@@ -201,9 +293,13 @@ export type Database = {
           stock_updated_at: string
         }[]
       }
+      review_pharmacy_request: {
+        Args: { p_approve: boolean; p_note?: string; p_request_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -330,6 +426,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
