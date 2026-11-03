@@ -91,7 +91,7 @@ export function BottomNav() {
 export function AppShell({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
   return (
     <div className="min-h-screen bg-muted/60">
-      <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col overflow-hidden bg-background pb-[calc(4.5rem+env(safe-area-inset-bottom))]">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col overflow-hidden bg-background">
         {/* decorative blobs */}
         <div aria-hidden className="pointer-events-none absolute -right-24 -top-16 h-80 w-80 rounded-full bg-blob" />
         <div aria-hidden className="pointer-events-none absolute -left-28 top-40 h-72 w-72 rounded-full bg-blob/70" />
@@ -108,7 +108,7 @@ export function AppShell({ children, footer }: { children: ReactNode; footer?: R
         <svg aria-hidden viewBox="0 0 400 40" preserveAspectRatio="none" className="relative h-10 w-full text-wave">
           <path d="M0 18 C 80 2, 160 30, 240 16 S 360 6, 400 14 L400 40 L0 40 Z" fill="currentColor" />
         </svg>
-        <footer className="bg-wave px-5 pb-4 pt-1 text-center text-xs text-muted-foreground">
+        <footer className="bg-wave px-5 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-1 text-center text-xs text-muted-foreground">
           GARDE — Votre santé, près de vous. · Données pharmacies © contributeurs OpenStreetMap
         </footer>
       </div>
