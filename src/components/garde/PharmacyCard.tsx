@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Clock, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatDistance, formatHours } from "@/lib/format";
+import { formatDistance, formatHours, telHref } from "@/lib/format";
 
 type Props = {
   id: string;
@@ -42,7 +42,13 @@ export function PharmacyCard(p: Props) {
         </li>
         <li className="flex items-start gap-2">
           <Phone className="mt-0.5 h-4 w-4 shrink-0" />
-          <span>{p.phone ?? "Téléphone non renseigné"}</span>
+          {p.phone ? (
+            <a href={telHref(p.phone)} className="font-semibold text-primary">
+              {p.phone}
+            </a>
+          ) : (
+            <span>Téléphone non renseigné</span>
+          )}
         </li>
       </ul>
       {p.on_duty && (
