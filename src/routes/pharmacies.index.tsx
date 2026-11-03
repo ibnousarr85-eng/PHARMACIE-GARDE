@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Loader2, MapPin } from "lucide-react";
 import { z } from "zod";
-import { AppShell } from "@/components/garde/AppShell";
+import { AppShell, BackLink } from "@/components/garde/AppShell";
 import { Chip, SearchInput } from "@/components/garde/SearchInput";
 import { PharmacyCard } from "@/components/garde/PharmacyCard";
 import { LocationPicker } from "@/components/garde/LocationPicker";
@@ -67,7 +67,8 @@ function PharmaciesPage() {
 
   return (
     <AppShell>
-      <h1 className="mb-5 text-[30px] font-extrabold tracking-tight text-foreground">Trouver une pharmacie</h1>
+      <BackLink to="/" />
+      <h1 className="mb-5 mt-3 text-[30px] font-extrabold tracking-tight text-foreground">Trouver une pharmacie</h1>
 
       <div className="space-y-4">
         <SearchInput

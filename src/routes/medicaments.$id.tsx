@@ -45,7 +45,7 @@ function MedicinePharmacies() {
 
   return (
     <AppShell>
-      <BackLink />
+      <BackLink fallback="/medicaments" />
       <h1 className="mt-3 text-[28px] font-extrabold leading-tight tracking-tight text-foreground">
         {m.name} {m.dosage && m.dosage !== "—" ? m.dosage : ""}
       </h1>

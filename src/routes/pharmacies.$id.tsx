@@ -65,7 +65,7 @@ function PharmacyDetail() {
         </div>
       }
     >
-      <BackLink />
+      <BackLink fallback="/pharmacies" />
       <h1 className="mt-3 text-[28px] font-extrabold uppercase leading-tight tracking-tight text-foreground">{p.name}</h1>
       <p className="mb-4 font-semibold text-foreground/85">Informations sur la pharmacie</p>
 

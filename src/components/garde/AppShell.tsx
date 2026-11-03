@@ -1,6 +1,7 @@
-import { Link, useRouter } from "@tanstack/react-router";
-import { ChevronLeft, Plus } from "lucide-react";
+import { Link, useRouter, useRouterState } from "@tanstack/react-router";
+import { ChevronLeft, Home, Pill, Plus, Store, Building2 } from "lucide-react";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 export function BrandHeader() {
   return (
@@ -16,16 +17,74 @@ export function BrandHeader() {
   );
 }
 
-export function BackLink({ to }: { to?: string }) {
+/**
+ * Clear "Retour" pill. With `to`, always goes there; otherwise goes back in
+ * history, or to `fallback` when the page was opened directly.
+ */
+export function BackLink({ to, fallback = "/", label = "Retour" }: { to?: string; fallback?: string; label?: string }) {
   const router = useRouter();
   return (
     <button
       type="button"
-      onClick={() => (to ? router.navigate({ to }) : router.history.back())}
-      className="inline-flex items-center gap-1 text-[15px] font-semibold text-primary"
+      onClick={() => {
+        if (to) router.navigate({ to });
+        else if (router.history.canGoBack()) router.history.back();
+        else router.navigate({ to: fallback });
+      }}
+      className="inline-flex h-10 items-center gap-1 self-start rounded-full bg-secondary pl-2 pr-4 text-[15px] font-semibold text-secondary-foreground shadow-[var(--shadow-card)] transition-colors hover:bg-secondary/80"
     >
-      <ChevronLeft className="h-4 w-4" strokeWidth={2.5} /> Retour
+      <ChevronLeft className="h-5 w-5" strokeWidth={2.5} /> {label}
     </button>
+  );
+}
+
+const TABS = [
+  { to: "/", label: "Accueil", icon: Home, match: (p: string) => p === "/" },
+  { to: "/pharmacies", label: "Pharmacies", icon: Building2, match: (p: string) => p.startsWith("/pharmacies") },
+  { to: "/medicaments", label: "Médicaments", icon: Pill, match: (p: string) => p.startsWith("/medicaments") },
+  {
+    to: "/espace-pharmacien",
+    label: "Espace Pharmacien",
+    icon: Store,
+    match: (p: string) => p.startsWith("/espace-pharmacien") || p.startsWith("/auth") || p.startsWith("/admin"),
+  },
+] as const;
+
+export function BottomNav() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  return (
+    <nav
+      aria-label="Navigation principale"
+      className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_20px_-12px_oklch(0.3_0.08_258/0.35)] backdrop-blur"
+    >
+      <ul className="grid grid-cols-4">
+        {TABS.map(({ to, label, icon: Icon, match }) => {
+          const active = match(pathname);
+          return (
+            <li key={to} className="min-w-0">
+              <Link
+                to={to}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "flex flex-col items-center gap-1 px-1 pb-2 pt-2.5 text-[11px] font-semibold leading-tight transition-colors",
+                  active ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                <span
+                  className={cn(
+                    "flex h-8 w-12 items-center justify-center rounded-full transition-colors",
+                    active && "bg-secondary",
+                  )}
+                >
+                  <Icon className="h-5 w-5" strokeWidth={active ? 2.5 : 2} />
+                </span>
+                <span className="w-full text-balance text-center">{label}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 }
 
@@ -49,10 +108,11 @@ export function AppShell({ children, footer }: { children: ReactNode; footer?: R
         <svg aria-hidden viewBox="0 0 400 40" preserveAspectRatio="none" className="relative h-10 w-full text-wave">
           <path d="M0 18 C 80 2, 160 30, 240 16 S 360 6, 400 14 L400 40 L0 40 Z" fill="currentColor" />
         </svg>
-        <footer className="bg-wave px-5 pb-4 pt-1 text-center text-xs text-muted-foreground">
+        <footer className="bg-wave px-5 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-1 text-center text-xs text-muted-foreground">
           GARDE — Votre santé, près de vous. · Données pharmacies © contributeurs OpenStreetMap
         </footer>
       </div>
+      <BottomNav />
     </div>
   );
 }
