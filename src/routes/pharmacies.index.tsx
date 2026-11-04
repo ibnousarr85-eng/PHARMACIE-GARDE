@@ -115,7 +115,7 @@ function PharmaciesPage() {
         ))}
       </div>
 
-      <div className="md:mt-6 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-start lg:gap-8">
+      <div className="md:mt-6 md:flex md:flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-start lg:gap-8">
         <section className="min-w-0">
         <h2 className="mb-3 mt-6 text-2xl md:mt-0 font-bold text-foreground">{title}</h2>
 
@@ -140,7 +140,7 @@ function PharmaciesPage() {
         </section>
 
         {wide && (
-          <aside className="order-first mb-6 mt-4 lg:sticky lg:top-28 lg:order-none lg:mb-0 lg:mt-0">
+          <aside className="order-first mb-6 lg:sticky lg:top-28 lg:order-none lg:mb-0 lg:mt-0">
             <PharmacyMap
               pharmacies={data ?? []}
               center={loc}

@@ -18,7 +18,7 @@ type Props = {
 export function PharmacyCard(p: Props) {
   const hours = formatHours(p.opening_hours);
   return (
-    <article className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+    <article className="flex h-full flex-col rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-xl font-bold leading-tight text-foreground">{p.name}</h3>
         {p.on_duty ? (
@@ -55,6 +55,7 @@ export function PharmacyCard(p: Props) {
         <p className="mt-2 text-sm text-muted-foreground">À {formatDistance(p.distance_km)} de vous</p>
       )}
       {p.extra}
+      <div className="flex-1" />
       <Button asChild size="lg" className="mt-4 h-12 w-full rounded-2xl text-base font-bold">
         <Link to="/pharmacies/$id" params={{ id: p.id }}>
           Voir les détails
