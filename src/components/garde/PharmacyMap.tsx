@@ -101,6 +101,7 @@ export function PharmacyMap({
           )
           .addTo(g);
       }
+      map.current.invalidateSize();
       if (pts.length > 1)
         map.current.fitBounds(L.latLngBounds(pts), { padding: [30, 30], maxZoom: 15 });
       else map.current.setView([center.lat, center.lng], 13);
