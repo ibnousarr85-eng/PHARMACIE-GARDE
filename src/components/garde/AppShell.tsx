@@ -13,7 +13,7 @@ export function BrandHeader() {
         <span className="text-3xl font-extrabold leading-none tracking-tight text-foreground">
           GARDE
         </span>
-        <span className="mt-1 text-[15px] font-medium text-foreground/85">
+        <span className="mt-1 whitespace-nowrap text-[15px] font-medium text-foreground/85">
           Votre santé, près de vous.
         </span>
       </span>
@@ -131,7 +131,7 @@ export function TopNav() {
                     : "text-muted-foreground hover:bg-secondary hover:text-foreground",
                 )}
               >
-                <Icon className="h-4 w-4" strokeWidth={active ? 2.5 : 2} />
+                <Icon className="hidden h-4 w-4 lg:block" strokeWidth={active ? 2.5 : 2} />
                 {label}
               </Link>
             </li>

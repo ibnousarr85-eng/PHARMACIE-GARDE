@@ -91,7 +91,7 @@ function PharmacyDetail() {
         </p>
       )}
 
-      <div className="flex flex-col gap-3 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] md:items-start md:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]">
+      <div className="flex flex-col gap-3 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] md:grid-rows-[auto_1fr] md:items-start md:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]">
         <div className="space-y-3 md:col-start-1 md:row-start-1 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
           <InfoCard icon={<MapPin className="h-4 w-4 text-destructive" />} label="Adresse">
             {p.address || p.city || "Sénégal"}
