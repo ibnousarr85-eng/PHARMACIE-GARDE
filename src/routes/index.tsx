@@ -70,7 +70,7 @@ function Home() {
         {/* Left: search + location */}
         <div className="flex flex-col">
           <h1 className="mb-6 text-[32px] font-extrabold leading-[1.15] tracking-tight text-foreground md:text-5xl md:leading-[1.1] lg:text-[56px]">
-            Besoin d'une pharmacie de garde ?
+            Besoin d'une pharmacie de garde\u00a0?
           </h1>
           <p className="mb-8 hidden text-lg text-muted-foreground md:block">
             Trouvez la pharmacie la plus proche de vous, partout au Sénégal, avec son téléphone et son itinéraire.
