@@ -55,7 +55,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Navigation principale"
-      className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-md border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_20px_-12px_oklch(0.3_0.08_258/0.35)] backdrop-blur"
+      className="fixed inset-x-0 bottom-0 z-40 mx-auto md:hidden w-full max-w-md border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_20px_-12px_oklch(0.3_0.08_258/0.35)] backdrop-blur"
     >
       <ul className="grid grid-cols-4">
         {TABS.map(({ to, label, icon: Icon, match }) => {
@@ -88,27 +88,77 @@ export function BottomNav() {
   );
 }
 
-export function AppShell({ children, footer }: { children: ReactNode; footer?: ReactNode }) {
+/** Top navigation used on tablet/desktop (md+) instead of the bottom tab bar. */
+export function TopNav() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
-    <div className="min-h-screen bg-muted/60">
-      <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col overflow-hidden bg-background">
-        {/* decorative blobs */}
-        <div aria-hidden className="pointer-events-none absolute -right-24 -top-16 h-80 w-80 rounded-full bg-blob" />
-        <div aria-hidden className="pointer-events-none absolute -left-28 top-40 h-72 w-72 rounded-full bg-blob/70" />
+    <nav aria-label="Navigation principale" className="hidden md:block">
+      <ul className="flex items-center gap-1 rounded-full border border-border bg-card/90 p-1.5 shadow-[var(--shadow-card)] backdrop-blur">
+        {TABS.map(({ to, label, icon: Icon, match }) => {
+          const active = match(pathname);
+          return (
+            <li key={to}>
+              <Link
+                to={to}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-2 whitespace-nowrap rounded-full px-3 py-2 text-sm font-semibold transition-colors lg:px-4",
+                  active
+                    ? "bg-primary text-primary-foreground shadow-[var(--shadow-soft)]"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                )}
+              >
+                <Icon className="h-4 w-4" strokeWidth={active ? 2.5 : 2} />
+                {label}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
 
-        <div className="relative z-10 flex flex-1 flex-col px-5 pb-6 pt-8">
-          <header className="mb-6">
+/**
+ * Mobile: narrow phone frame + bottom tab bar (matches the mockups).
+ * md+: full-width airy layout with a top navigation.
+ * `size="narrow"` keeps forms readable on large screens.
+ * `footer` is mobile-only; pages render its desktop equivalent themselves.
+ */
+export function AppShell({
+  children,
+  footer,
+  size = "wide",
+}: {
+  children: ReactNode;
+  footer?: ReactNode;
+  size?: "wide" | "narrow";
+}) {
+  const inner = size === "narrow" ? "md:max-w-2xl" : "md:max-w-6xl";
+  return (
+    <div className="min-h-screen bg-muted/60 md:bg-background">
+      <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col overflow-hidden bg-background md:max-w-none">
+        {/* decorative blobs */}
+        <div aria-hidden className="pointer-events-none absolute -right-24 -top-16 h-80 w-80 rounded-full bg-blob md:-right-32 md:-top-40 md:h-[34rem] md:w-[34rem]" />
+        <div aria-hidden className="pointer-events-none absolute -left-28 top-40 h-72 w-72 rounded-full bg-blob/70 md:-left-48 md:top-72 md:h-[28rem] md:w-[28rem]" />
+
+        <header className="relative z-20 px-5 pt-8 md:sticky md:top-0 md:border-b md:border-border/60 md:bg-background/80 md:px-8 md:py-4 md:backdrop-blur">
+          <div className="mx-auto flex w-full items-center justify-between gap-6 md:max-w-6xl">
             <BrandHeader />
-          </header>
-          <main className="flex flex-1 flex-col">{children}</main>
+            <TopNav />
+          </div>
+        </header>
+
+        <div className="relative z-10 flex flex-1 flex-col px-5 pb-6 pt-6 md:px-8 md:pb-12 md:pt-10">
+          <main className={cn("mx-auto flex w-full flex-1 flex-col", inner)}>{children}</main>
         </div>
 
-        {footer && <div className="relative z-10 px-5 pb-6">{footer}</div>}
+        {footer && <div className="relative z-10 px-5 pb-6 md:hidden">{footer}</div>}
 
-        <svg aria-hidden viewBox="0 0 400 40" preserveAspectRatio="none" className="relative h-10 w-full text-wave">
+        <svg aria-hidden viewBox="0 0 400 40" preserveAspectRatio="none" className="relative h-10 w-full text-wave md:h-16">
           <path d="M0 18 C 80 2, 160 30, 240 16 S 360 6, 400 14 L400 40 L0 40 Z" fill="currentColor" />
         </svg>
-        <footer className="bg-wave px-5 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-1 text-center text-xs text-muted-foreground">
+        <footer className="bg-wave px-5 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-1 text-center text-xs text-muted-foreground md:pb-6 md:text-sm">
           GARDE — Votre santé, près de vous. · Données pharmacies © contributeurs OpenStreetMap
         </footer>
       </div>
