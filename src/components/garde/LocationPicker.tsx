@@ -21,10 +21,16 @@ export function LocationPicker() {
         <span className="flex-1">
           <span className="block font-bold text-foreground">Votre localisation</span>
           <span className="block text-sm font-semibold text-primary">
-            {locating ? "Localisation en cours…" : location ? location.label : "Utiliser ma position actuelle"}
+            {locating
+              ? "Localisation en cours…"
+              : location
+                ? location.label
+                : "Utiliser ma position actuelle"}
           </span>
         </span>
-        <ChevronDown className={`h-5 w-5 text-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown
+          className={`h-5 w-5 text-foreground transition-transform ${open ? "rotate-180" : ""}`}
+        />
       </button>
 
       {open && (
@@ -37,7 +43,11 @@ export function LocationPicker() {
             }}
             className="mb-3 flex w-full items-center gap-2 rounded-xl bg-background px-3 py-2.5 text-sm font-semibold text-primary"
           >
-            {locating ? <Loader2 className="h-4 w-4 animate-spin" /> : <LocateFixed className="h-4 w-4" />}
+            {locating ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <LocateFixed className="h-4 w-4" />
+            )}
             Utiliser ma position actuelle (GPS)
           </button>
           {error && <p className="mb-2 text-sm text-destructive">{error}</p>}

@@ -71,7 +71,7 @@ function Dashboard() {
   };
 
   return (
-    <AppShell>
+    <AppShell size="narrow">
       <div className="flex items-center justify-between gap-3">
         <BackLink to="/" />
         <button type="button" onClick={signOut} className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground">

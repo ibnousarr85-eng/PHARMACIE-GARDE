@@ -39,7 +39,7 @@ function AdminPage() {
   const [status, setStatus] = useState<Status>("pending");
 
   return (
-    <AppShell>
+    <AppShell size="narrow">
       <BackLink to="/espace-pharmacien" />
       <h1 className="mt-3 text-[28px] font-extrabold tracking-tight text-foreground">Administration</h1>
       <p className="mb-5 text-sm text-muted-foreground">Demandes des pharmaciens pour gérer une officine.</p>

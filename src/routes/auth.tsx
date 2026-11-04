@@ -71,7 +71,7 @@ function AuthPage() {
   };
 
   return (
-    <AppShell>
+    <AppShell size="narrow">
       <BackLink to="/" />
       <h1 className="mt-3 text-[28px] font-extrabold tracking-tight text-foreground">Espace pharmacien</h1>
       <p className="mb-6 text-muted-foreground">

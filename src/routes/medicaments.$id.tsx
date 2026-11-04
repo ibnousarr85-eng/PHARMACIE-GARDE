@@ -46,7 +46,7 @@ function MedicinePharmacies() {
   return (
     <AppShell>
       <BackLink fallback="/medicaments" />
-      <h1 className="mt-3 text-[28px] font-extrabold leading-tight tracking-tight text-foreground">
+      <h1 className="mt-3 text-[28px] font-extrabold leading-tight tracking-tight text-foreground md:text-4xl">
         {m.name} {m.dosage && m.dosage !== "—" ? m.dosage : ""}
       </h1>
       <p className="mb-4 flex items-center gap-2 text-muted-foreground">
@@ -54,7 +54,9 @@ function MedicinePharmacies() {
         {m.package ? ` • ${m.package}` : ""}
       </p>
 
-      <LocationPicker />
+      <div className="md:max-w-md">
+        <LocationPicker />
+      </div>
 
       <h2 className="mb-3 mt-6 text-2xl font-bold text-foreground">Pharmacies avec du stock</h2>
       {isLoading && (
@@ -67,7 +69,7 @@ function MedicinePharmacies() {
           Aucune pharmacie n'a encore signalé ce médicament en stock. Appelez la pharmacie la plus proche pour vérifier.
         </p>
       )}
-      <div className="space-y-4">
+      <div className="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0 lg:grid-cols-3">
         {data?.map((p) => (
           <PharmacyCard
             key={p.id}

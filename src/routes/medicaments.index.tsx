@@ -36,7 +36,7 @@ function MedicinesPage() {
   return (
     <AppShell>
       <BackLink to="/" />
-      <h1 className="mt-3 text-[30px] font-extrabold tracking-tight text-foreground">Rechercher un médicament</h1>
+      <h1 className="mt-3 text-[30px] font-extrabold tracking-tight text-foreground md:text-4xl">Rechercher un médicament</h1>
       <p className="mb-5 text-muted-foreground">Trouvez les pharmacies proches qui l'ont en stock.</p>
 
       <form
@@ -44,15 +44,15 @@ function MedicinesPage() {
           e.preventDefault();
           search(text.trim());
         }}
-        className="space-y-4"
+        className="space-y-4 md:grid md:grid-cols-[minmax(0,1fr)_auto] md:gap-4 md:space-y-0"
       >
         <SearchInput value={text} onChange={(e) => setText(e.target.value)} placeholder="Nom du médicament…" aria-label="Nom du médicament" />
-        <Button type="submit" size="lg" className="h-14 w-full rounded-2xl text-lg font-bold shadow-[var(--shadow-soft)]">
+        <Button type="submit" size="lg" className="h-14 w-full rounded-2xl text-lg font-bold shadow-[var(--shadow-soft)] md:w-auto md:px-10">
           Rechercher
         </Button>
       </form>
 
-      <div className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1">
+      <div className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1 md:mx-0 md:flex-wrap md:px-0">
         {QUICK.map((c) => (
           <Chip
             key={c}
@@ -79,9 +79,9 @@ function MedicinesPage() {
           Aucun médicament trouvé pour « {q} ».
         </p>
       )}
-      <div className="space-y-4">
+      <div className="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0 lg:grid-cols-3">
         {data?.map((m, i) => (
-          <article key={m.id} className="rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
+          <article key={m.id} className="flex flex-col rounded-3xl border border-border bg-card p-5 shadow-[var(--shadow-card)]">
             <h3 className="text-xl font-bold text-foreground">
               {m.name} {m.dosage && m.dosage !== "—" ? m.dosage : ""}
             </h3>
@@ -93,6 +93,7 @@ function MedicinesPage() {
               <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
               {m.category ? `${m.category}. ` : ""}Stock mis à jour par les pharmacies.
             </p>
+            <div className="flex-1" />
             <Button
               asChild
               size="lg"

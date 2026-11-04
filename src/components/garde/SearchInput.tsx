@@ -13,7 +13,15 @@ export function SearchInput(props: InputHTMLAttributes<HTMLInputElement>) {
   );
 }
 
-export function Chip({ active, children, onClick }: { active?: boolean; children: React.ReactNode; onClick?: () => void }) {
+export function Chip({
+  active,
+  children,
+  onClick,
+}: {
+  active?: boolean;
+  children: React.ReactNode;
+  onClick?: () => void;
+}) {
   return (
     <button
       type="button"
