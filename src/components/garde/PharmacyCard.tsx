@@ -52,7 +52,9 @@ export function PharmacyCard(p: Props) {
         </li>
       </ul>
       {p.on_duty && (
-        <p className="mt-2 text-sm text-muted-foreground">À {formatDistance(p.distance_km)} de vous</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          À {formatDistance(p.distance_km)} de vous
+        </p>
       )}
       {p.extra}
       <div className="flex-1" />

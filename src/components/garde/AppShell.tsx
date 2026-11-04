@@ -10,8 +10,12 @@ export function BrandHeader() {
         <Plus className="h-9 w-9" strokeWidth={3} />
       </span>
       <span className="flex flex-col">
-        <span className="text-3xl font-extrabold leading-none tracking-tight text-foreground">GARDE</span>
-        <span className="mt-1 text-[15px] font-medium text-foreground/85">Votre santé, près de vous.</span>
+        <span className="text-3xl font-extrabold leading-none tracking-tight text-foreground">
+          GARDE
+        </span>
+        <span className="mt-1 text-[15px] font-medium text-foreground/85">
+          Votre santé, près de vous.
+        </span>
       </span>
     </Link>
   );
@@ -21,7 +25,15 @@ export function BrandHeader() {
  * Clear "Retour" pill. With `to`, always goes there; otherwise goes back in
  * history, or to `fallback` when the page was opened directly.
  */
-export function BackLink({ to, fallback = "/", label = "Retour" }: { to?: string; fallback?: string; label?: string }) {
+export function BackLink({
+  to,
+  fallback = "/",
+  label = "Retour",
+}: {
+  to?: string;
+  fallback?: string;
+  label?: string;
+}) {
   const router = useRouter();
   return (
     <button
@@ -40,13 +52,24 @@ export function BackLink({ to, fallback = "/", label = "Retour" }: { to?: string
 
 const TABS = [
   { to: "/", label: "Accueil", icon: Home, match: (p: string) => p === "/" },
-  { to: "/pharmacies", label: "Pharmacies", icon: Building2, match: (p: string) => p.startsWith("/pharmacies") },
-  { to: "/medicaments", label: "Médicaments", icon: Pill, match: (p: string) => p.startsWith("/medicaments") },
+  {
+    to: "/pharmacies",
+    label: "Pharmacies",
+    icon: Building2,
+    match: (p: string) => p.startsWith("/pharmacies"),
+  },
+  {
+    to: "/medicaments",
+    label: "Médicaments",
+    icon: Pill,
+    match: (p: string) => p.startsWith("/medicaments"),
+  },
   {
     to: "/espace-pharmacien",
     label: "Espace Pharmacien",
     icon: Store,
-    match: (p: string) => p.startsWith("/espace-pharmacien") || p.startsWith("/auth") || p.startsWith("/admin"),
+    match: (p: string) =>
+      p.startsWith("/espace-pharmacien") || p.startsWith("/auth") || p.startsWith("/admin"),
   },
 ] as const;
 
@@ -139,8 +162,14 @@ export function AppShell({
     <div className="min-h-screen bg-muted/60 md:bg-background">
       <div className="relative mx-auto flex min-h-screen w-full max-w-md flex-col overflow-hidden bg-background md:max-w-none">
         {/* decorative blobs */}
-        <div aria-hidden className="pointer-events-none absolute -right-24 -top-16 h-80 w-80 rounded-full bg-blob md:-right-32 md:-top-40 md:h-[34rem] md:w-[34rem]" />
-        <div aria-hidden className="pointer-events-none absolute -left-28 top-40 h-72 w-72 rounded-full bg-blob/70 md:-left-48 md:top-72 md:h-[28rem] md:w-[28rem]" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 -top-16 h-80 w-80 rounded-full bg-blob md:-right-32 md:-top-40 md:h-[34rem] md:w-[34rem]"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-28 top-40 h-72 w-72 rounded-full bg-blob/70 md:-left-48 md:top-72 md:h-[28rem] md:w-[28rem]"
+        />
 
         <header className="relative z-20 px-5 pt-8 md:sticky md:top-0 md:border-b md:border-border/60 md:bg-background/80 md:px-8 md:py-4 md:backdrop-blur">
           <div className="mx-auto flex w-full items-center justify-between gap-6 md:max-w-6xl">
@@ -155,8 +184,16 @@ export function AppShell({
 
         {footer && <div className="relative z-10 px-5 pb-6 md:hidden">{footer}</div>}
 
-        <svg aria-hidden viewBox="0 0 400 40" preserveAspectRatio="none" className="relative h-10 w-full text-wave md:h-16">
-          <path d="M0 18 C 80 2, 160 30, 240 16 S 360 6, 400 14 L400 40 L0 40 Z" fill="currentColor" />
+        <svg
+          aria-hidden
+          viewBox="0 0 400 40"
+          preserveAspectRatio="none"
+          className="relative h-10 w-full text-wave md:h-16"
+        >
+          <path
+            d="M0 18 C 80 2, 160 30, 240 16 S 360 6, 400 14 L400 40 L0 40 Z"
+            fill="currentColor"
+          />
         </svg>
         <footer className="bg-wave px-5 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-1 text-center text-xs text-muted-foreground md:pb-6 md:text-sm">
           GARDE — Votre santé, près de vous. · Données pharmacies © contributeurs OpenStreetMap

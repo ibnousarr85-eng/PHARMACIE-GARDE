@@ -1,7 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import type { Map as LeafletMap, LayerGroup } from "leaflet";
 
-export type MapPharmacy = { id: string; name: string; lat: number; lng: number; on_duty: boolean; phone: string | null };
+export type MapPharmacy = {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  on_duty: boolean;
+  phone: string | null;
+};
 
 /** True only once we know the screen is tablet/desktop width (md+). */
 export function useIsWide() {
@@ -17,7 +24,10 @@ export function useIsWide() {
 }
 
 function escapeHtml(s: string) {
-  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+  return s.replace(
+    /[&<>"']/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!,
+  );
 }
 
 /**
@@ -44,7 +54,10 @@ export function PharmacyMap({
       const L = (await import("leaflet")).default;
       await import("leaflet/dist/leaflet.css");
       if (cancelled || !el.current || map.current) return;
-      const m = L.map(el.current, { zoomControl: true, scrollWheelZoom: false }).setView([center.lat, center.lng], 13);
+      const m = L.map(el.current, { zoomControl: true, scrollWheelZoom: false }).setView(
+        [center.lat, center.lng],
+        13,
+      );
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution: "© contributeurs OpenStreetMap",
@@ -81,12 +94,15 @@ export function PharmacyMap({
         })
           .bindPopup(
             `<strong>${escapeHtml(p.name)}</strong>` +
-              (p.phone ? `<br/><a href="tel:${escapeHtml(p.phone.replace(/\s/g, ""))}">${escapeHtml(p.phone)}</a>` : "") +
+              (p.phone
+                ? `<br/><a href="tel:${escapeHtml(p.phone.replace(/\s/g, ""))}">${escapeHtml(p.phone)}</a>`
+                : "") +
               `<br/><a href="/pharmacies/${encodeURIComponent(p.id)}">Voir les détails</a>`,
           )
           .addTo(g);
       }
-      if (pts.length > 1) map.current.fitBounds(L.latLngBounds(pts), { padding: [30, 30], maxZoom: 15 });
+      if (pts.length > 1)
+        map.current.fitBounds(L.latLngBounds(pts), { padding: [30, 30], maxZoom: 15 });
       else map.current.setView([center.lat, center.lng], 13);
     })();
     return () => {
@@ -94,5 +110,12 @@ export function PharmacyMap({
     };
   }, [ready, pharmacies, center.lat, center.lng]);
 
-  return <div ref={el} className={`isolate z-0 ${className ?? ""}`} role="region" aria-label="Carte des pharmacies" />;
+  return (
+    <div
+      ref={el}
+      className={`isolate z-0 ${className ?? ""}`}
+      role="region"
+      aria-label="Carte des pharmacies"
+    />
+  );
 }
