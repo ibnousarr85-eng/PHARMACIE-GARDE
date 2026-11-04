@@ -43,30 +43,31 @@ function PharmacyDetail() {
   const d = 0.006;
   const mapSrc = `https://www.openstreetmap.org/export/embed.html?bbox=${p.lng - d},${p.lat - d},${p.lng + d},${p.lat + d}&layer=mapnik&marker=${p.lat},${p.lng}`;
   const available = (stock ?? []).filter((s) => s.quantity > 0);
+  const actions = (
+        <div className="space-y-3">
+    {p.phone ? (
+      <Button asChild size="lg" className="h-14 w-full rounded-2xl text-lg font-bold shadow-[var(--shadow-soft)]">
+        <a href={telHref(p.phone)}>Appeler la pharmacie</a>
+      </Button>
+    ) : (
+      <Button disabled size="lg" className="h-14 w-full rounded-2xl text-lg font-bold">
+        Numéro non renseigné
+      </Button>
+    )}
+    <Button asChild variant="outline" size="lg" className="h-14 w-full rounded-2xl border-primary text-lg font-bold text-primary">
+      <a href={directionsHref(p.lat, p.lng)} target="_blank" rel="noreferrer">
+        Itinéraire
+      </a>
+    </Button>
+        </div>
+  );
 
   return (
     <AppShell
-      footer={
-        <div className="space-y-3">
-          {p.phone ? (
-            <Button asChild size="lg" className="h-14 w-full rounded-2xl text-lg font-bold shadow-[var(--shadow-soft)]">
-              <a href={telHref(p.phone)}>Appeler la pharmacie</a>
-            </Button>
-          ) : (
-            <Button disabled size="lg" className="h-14 w-full rounded-2xl text-lg font-bold">
-              Numéro non renseigné
-            </Button>
-          )}
-          <Button asChild variant="outline" size="lg" className="h-14 w-full rounded-2xl border-primary text-lg font-bold text-primary">
-            <a href={directionsHref(p.lat, p.lng)} target="_blank" rel="noreferrer">
-              Itinéraire
-            </a>
-          </Button>
-        </div>
-      }
+      footer={actions}
     >
       <BackLink fallback="/pharmacies" />
-      <h1 className="mt-3 text-[28px] font-extrabold uppercase leading-tight tracking-tight text-foreground">{p.name}</h1>
+      <h1 className="mt-3 text-[28px] font-extrabold uppercase leading-tight tracking-tight text-foreground md:text-4xl">{p.name}</h1>
       <p className="mb-4 font-semibold text-foreground/85">Informations sur la pharmacie</p>
 
       {p.managed && (
@@ -75,7 +76,8 @@ function PharmacyDetail() {
         </p>
       )}
 
-      <div className="space-y-3">
+      <div className="flex flex-col gap-3 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] md:items-start md:gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)]">
+        <div className="space-y-3 md:col-start-1 md:row-start-1 lg:grid lg:grid-cols-2 lg:gap-3 lg:space-y-0">
         <InfoCard icon={<MapPin className="h-4 w-4 text-destructive" />} label="Adresse">
           {p.address || p.city || "Sénégal"}
         </InfoCard>
@@ -100,7 +102,9 @@ function PharmacyDetail() {
             {hours ? `Horaires habituels : ${hours}` : "Horaires habituels non renseignés"}
           </span>
         </InfoCard>
+        </div>
 
+        <div className="space-y-4 md:sticky md:top-28 md:col-start-2 md:row-span-2 md:row-start-1">
         <div className="rounded-2xl border border-border bg-card p-4">
           <p className="mb-3 flex items-center gap-2 text-[15px] font-bold text-foreground">
             <Map className="h-4 w-4 text-primary" /> Localisation — Emplacement sur la carte
@@ -108,12 +112,14 @@ function PharmacyDetail() {
           <iframe
             title={`Carte — ${p.name}`}
             src={mapSrc}
-            className="h-52 w-full rounded-2xl border border-border"
+            className="h-52 w-full rounded-2xl border border-border md:h-72 lg:h-80"
             loading="lazy"
           />
         </div>
+        <div className="hidden md:block">{actions}</div>
+        </div>
 
-        <div className="rounded-2xl border border-border bg-card p-4">
+        <div className="rounded-2xl border border-border bg-card p-4 md:col-start-1 md:row-start-2 md:p-5">
           <p className="mb-3 flex items-center gap-2 text-[15px] font-bold text-foreground">
             <Pill className="h-4 w-4 text-primary" /> Médicaments en stock
           </p>
