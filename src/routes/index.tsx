@@ -148,7 +148,7 @@ function QuickLink({
   label,
 }: {
   to: "/pharmacies" | "/medicaments";
-  search?: Record<string, string>;
+  search?: Record<string, string> | undefined;
   icon: React.ReactNode;
   label: string;
 }) {
