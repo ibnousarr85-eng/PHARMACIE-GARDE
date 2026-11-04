@@ -147,6 +147,23 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+/* Leaflet circle markers themed with design tokens */
+.garde-marker {
+  fill: var(--primary);
+  fill-opacity: 0.9;
+  stroke: var(--primary-foreground);
+  stroke-width: 2;
+}
+.garde-marker-duty {
+  fill: var(--success);
+}
+.garde-marker-me {
+  fill: var(--destructive);
+  fill-opacity: 0.95;
+  stroke: var(--primary-foreground);
+  stroke-width: 3;
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
