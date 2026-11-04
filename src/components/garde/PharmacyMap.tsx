@@ -94,5 +94,5 @@ export function PharmacyMap({
     };
   }, [ready, pharmacies, center.lat, center.lng]);
 
-  return <div ref={el} className={className} role="region" aria-label="Carte des pharmacies" />;
+  return <div ref={el} className={`isolate z-0 ${className ?? ""}`} role="region" aria-label="Carte des pharmacies" />;
 }
