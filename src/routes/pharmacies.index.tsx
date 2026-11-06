@@ -1,16 +1,18 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Loader2, MapPin } from "lucide-react";
 import { z } from "zod";
+import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { AppShell, BackLink } from "@/components/garde/AppShell";
 import { Chip, SearchInput } from "@/components/garde/SearchInput";
 import { PharmacyCard } from "@/components/garde/PharmacyCard";
 import { LocationPicker } from "@/components/garde/LocationPicker";
+import { GeographicFilters } from "@/components/garde/GeographicFilters";
 import { PharmacyMap, useIsWide } from "@/components/garde/PharmacyMap";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_LOCATION, useUserLocation } from "@/lib/location";
-import { nearbyPharmaciesQuery } from "@/lib/pharmacies";
+import { geographicOptionsQuery, nearbyPharmaciesQuery } from "@/lib/pharmacies";
 
 const FILTERS = [
   { id: "toutes", label: "Toutes" },
@@ -20,12 +22,16 @@ const FILTERS = [
 ] as const;
 
 const searchSchema = z.object({
-  q: z.string().optional(),
-  filtre: z.enum(["toutes", "garde", "2km", "telephone"]).optional(),
+  q: fallback(z.string(), "").optional(),
+  filtre: fallback(z.string(), "toutes").optional(),
+  region: fallback(z.string(), "").optional(),
+  departement: fallback(z.string(), "").optional(),
+  ville: fallback(z.string(), "").optional(),
 });
 
 export const Route = createFileRoute("/pharmacies/")({
-  validateSearch: searchSchema,
+  validateSearch: zodValidator(searchSchema),
+  loader: ({ context }) => context.queryClient.ensureQueryData(geographicOptionsQuery),
   head: () => ({
     meta: [
       { title: "Trouver une pharmacie près de moi — GARDE" },
@@ -47,7 +53,9 @@ export const Route = createFileRoute("/pharmacies/")({
 });
 
 function PharmaciesPage() {
-  const { q, filtre = "toutes" } = Route.useSearch();
+  const { q, filtre: requestedFilter, region, departement, ville } = Route.useSearch();
+  const filtre = FILTERS.some((filter) => filter.id === requestedFilter) ? requestedFilter : "toutes";
+  const { data: geographicRows } = useSuspenseQuery(geographicOptionsQuery);
   const navigate = useNavigate({ from: "/pharmacies/" });
   const { location, locating, requestGps } = useUserLocation();
   const [text, setText] = useState(q ?? "");
@@ -64,6 +72,9 @@ function PharmaciesPage() {
       lat: loc.lat,
       lng: loc.lng,
       search: debounced,
+      region,
+      department: departement,
+      city: ville,
       maxKm: filtre === "2km" ? 2 : null,
       onDuty: filtre === "garde",
       withPhone: filtre === "telephone",
@@ -112,6 +123,8 @@ function PharmaciesPage() {
           </p>
         )}
       </div>
+
+      <GeographicFilters rows={geographicRows} selected={{ region, departement, ville }} onChange={(selection) => navigate({ search: (previous) => ({ ...previous, ...selection, q: text || undefined }) })} />
 
       <div className="-mx-5 mt-4 flex gap-2 overflow-x-auto px-5 pb-1 md:mx-0 md:flex-wrap md:px-0">
         {FILTERS.map((f) => (
