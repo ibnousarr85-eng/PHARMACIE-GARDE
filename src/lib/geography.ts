@@ -1,4 +1,4 @@
-export type GeographicSelection = { region?: string; departement?: string; ville?: string };
+export type GeographicSelection = { region?: string | undefined; departement?: string | undefined; ville?: string | undefined };
 export type GeographicOption = { region: string; department: string; city: string | null };
 
 export function changeGeography(current: GeographicSelection, field: keyof GeographicSelection, value: string): GeographicSelection {

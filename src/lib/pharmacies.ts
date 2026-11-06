@@ -24,9 +24,9 @@ export type NearbyFilters = {
   onDuty?: boolean;
   withPhone?: boolean;
   limit?: number;
-  region?: string;
-  department?: string;
-  city?: string;
+  region?: string | undefined;
+  department?: string | undefined;
+  city?: string | undefined;
 };
 
 export const nearbyPharmaciesQuery = (f: NearbyFilters) =>
