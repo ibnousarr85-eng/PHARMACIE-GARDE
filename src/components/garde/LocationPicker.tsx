@@ -1,26 +1,19 @@
-import { useId, useState } from "react";
-import { Loader2, LocateFixed, MapPin } from "lucide-react";
+import { useId } from "react";
+import { ChevronUp, Loader2, LocateFixed, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SENEGAL_CITIES } from "@/lib/cities";
 import { useUserLocation } from "@/lib/location";
 
 export function LocationPicker() {
   const { location, locating, error, requestGps, setCity } = useUserLocation();
-  const [open, setOpen] = useState(false);
   const cityId = useId();
-  const manual = open || location?.source === "city";
-
-  const activateGps = async () => {
-    const loc = await requestGps();
-    if (loc) setOpen(false);
-  };
 
   return (
     <div className="rounded-2xl border border-border bg-muted">
       <Button
         type="button"
         variant="ghost"
-        onClick={activateGps}
+        onClick={() => requestGps()}
         disabled={locating}
         className="h-auto w-full justify-start gap-4 whitespace-normal rounded-2xl p-4 text-left"
         aria-busy={locating}
@@ -38,34 +31,33 @@ export function LocationPicker() {
                 : "Utiliser ma position actuelle"}
           </span>
         </span>
-        {locating ? <Loader2 className="h-5 w-5 shrink-0 animate-spin text-primary" /> : <LocateFixed className="h-5 w-5 shrink-0 text-primary" />}
+        {locating ? <Loader2 className="h-5 w-5 shrink-0 animate-spin text-primary" /> : <ChevronUp className="h-5 w-5 shrink-0 text-foreground" />}
       </Button>
 
       <div className="border-t border-border p-4 pt-3">
         <Button
           type="button"
-          variant="outline"
+          variant="ghost"
           disabled={locating}
-          onClick={() => manual ? activateGps() : setOpen(true)}
-          className="h-auto w-full whitespace-normal rounded-xl px-3 py-2.5 font-semibold text-primary"
+          onClick={() => requestGps()}
+          className="h-auto w-full justify-start whitespace-normal rounded-full bg-background px-3 py-3 font-semibold text-primary"
         >
-          {manual ? <LocateFixed /> : <MapPin />}
-          {manual ? "Utiliser le GPS" : "Choisir une ville"}
+          {locating ? <Loader2 className="animate-spin" /> : <LocateFixed />}
+          Utiliser ma position actuelle (GPS)
         </Button>
         {error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}
-        {manual && (
-          <div className="mt-3">
+        <div className="mt-3">
           <label htmlFor={cityId} className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Choisir une ville
+            Ou choisir une ville
           </label>
           <select
             id={cityId}
+            aria-label="Choisir une ville"
             disabled={locating}
             className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm"
             value={location?.source === "city" ? location.label : ""}
             onChange={(e) => {
               setCity(e.target.value);
-              setOpen(false);
             }}
           >
             <option value="" disabled>
@@ -78,7 +70,6 @@ export function LocationPicker() {
             ))}
           </select>
           </div>
-        )}
       </div>
     </div>
   );
