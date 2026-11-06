@@ -104,6 +104,33 @@ export type Database = {
         }
         Relationships: []
       }
+      pharmacy_departments: {
+        Row: {
+          boundary: unknown
+          boundary_geojson: string
+          code: string
+          department: string
+          region: string
+          source: string
+        }
+        Insert: {
+          boundary?: unknown
+          boundary_geojson: string
+          code: string
+          department: string
+          region: string
+          source?: string
+        }
+        Update: {
+          boundary?: unknown
+          boundary_geojson?: string
+          code?: string
+          department?: string
+          region?: string
+          source?: string
+        }
+        Relationships: []
+      }
       pharmacy_requests: {
         Row: {
           address: string | null
@@ -270,6 +297,34 @@ export type Database = {
           phone: string
         }[]
       }
+      nearest_pharmacies_filtered: {
+        Args: {
+          p_city?: string
+          p_department?: string
+          p_lat: number
+          p_limit?: number
+          p_lng: number
+          p_max_km?: number
+          p_on_duty?: boolean
+          p_region?: string
+          p_search?: string
+          p_with_phone?: boolean
+        }
+        Returns: {
+          address: string
+          city: string
+          distance_km: number
+          id: string
+          lat: number
+          lng: number
+          locality: string
+          name: string
+          on_duty: boolean
+          on_duty_until: string
+          opening_hours: string
+          phone: string
+        }[]
+      }
       pharmacies_with_medicine: {
         Args: {
           p_lat: number
@@ -291,6 +346,14 @@ export type Database = {
           price_fcfa: number
           quantity: number
           stock_updated_at: string
+        }[]
+      }
+      pharmacy_geographic_options: {
+        Args: never
+        Returns: {
+          city: string
+          department: string
+          region: string
         }[]
       }
       review_pharmacy_request: {
