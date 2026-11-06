@@ -24,6 +24,9 @@ export type NearbyFilters = {
   onDuty?: boolean;
   withPhone?: boolean;
   limit?: number;
+  region?: string | undefined;
+  department?: string | undefined;
+  city?: string | undefined;
 };
 
 export const nearbyPharmaciesQuery = (f: NearbyFilters) =>
@@ -33,6 +36,7 @@ export const nearbyPharmaciesQuery = (f: NearbyFilters) =>
       const args: {
         p_lat: number; p_lng: number; p_search?: string; p_max_km?: number;
         p_on_duty: boolean; p_with_phone: boolean; p_limit: number;
+        p_region?: string; p_department?: string; p_city?: string;
       } = {
         p_lat: f.lat,
         p_lng: f.lng,
@@ -43,11 +47,24 @@ export const nearbyPharmaciesQuery = (f: NearbyFilters) =>
       const term = f.search?.trim();
       if (term) args.p_search = term;
       if (f.maxKm != null) args.p_max_km = f.maxKm;
-      const { data, error } = await supabase.rpc("nearest_pharmacies", args);
+      if (f.region) args.p_region = f.region;
+      if (f.department) args.p_department = f.department;
+      if (f.city) args.p_city = f.city;
+      const { data, error } = await supabase.rpc("nearest_pharmacies_filtered", args);
       if (error) throw error;
       return (data ?? []) as NearbyPharmacy[];
     },
   });
+
+export const geographicOptionsQuery = queryOptions({
+  queryKey: ["pharmacy-geographic-options"],
+  queryFn: async () => {
+    const { data, error } = await supabase.rpc("pharmacy_geographic_options");
+    if (error) throw error;
+    return data ?? [];
+  },
+  staleTime: 5 * 60 * 1000,
+});
 
 export const pharmacyQuery = (id: string) =>
   queryOptions({

@@ -13,6 +13,7 @@
 
 - Pharmacy rows come from an OpenStreetMap import (`osm_id`, `source='osm'`) plus pharmacist-added rows (`source='pharmacist'`); never invent pharmacy data — real data only.
 - Nearest-pharmacy search runs in the database (`nearest_pharmacies` / `pharmacies_with_medicine` RPCs, haversine) so the browser never downloads the whole country.
+- Geographic pharmacy filtering uses `nearest_pharmacies_filtered` and official OCHA COD-AB v02 department polygons (including Keur Massar); choices come from `pharmacy_geographic_options`, and URL geographic selections never change LocationProvider's GPS coordinates. Boundary source: https://data.humdata.org/dataset/cod-ab-sen; import the ADM2 GeoJSON into pharmacy_departments using its codes, names and geometry.
 - A pharmacist account owns at most one pharmacy via `pharmacies.owner_id`; pharmacists only file `pharmacy_requests`, and ownership is set (or a pharmacist pharmacy created) solely by the admin-only `review_pharmacy_request` RPC (a trigger blocks other owner_id edits) so stock RLS can trust it.
 - Admins are rows in `user_roles` checked with `has_role`; never derive admin status from profile data or client storage.
 - Navigation (bottom tab bar below `md`, `TopNav` header at `md+`) and the `BackLink` pill live in `AppShell`, so every page gets the same navigation.
