@@ -33,11 +33,10 @@ describe("Location picker", () => {
   it("switches to a manual city and back to GPS without changing position on mode selection", async () => {
     mount();
     fireEvent.click(screen.getByText("Votre localisation"));
-    fireEvent.click(screen.getByRole("button", { name: "Choisir une ville" }));
     expect(JSON.parse(screen.getByTestId("position").textContent ?? "null").source).toBe("gps");
     fireEvent.change(screen.getByRole("combobox", { name: "Choisir une ville" }), { target: { value: "Thiès" } });
     expect(JSON.parse(screen.getByTestId("position").textContent ?? "null")).toMatchObject({ lat: 14.8255, lng: -17.0997, source: "city" });
-    fireEvent.click(screen.getByRole("button", { name: "Utiliser le GPS" }));
+    fireEvent.click(screen.getByRole("button", { name: "Utiliser ma position actuelle (GPS)" }));
     await waitFor(() => expect(JSON.parse(screen.getByTestId("position").textContent ?? "null")).toMatchObject({ lat: 14.7771, lng: -17.3901, source: "gps" }));
   });
 
@@ -46,8 +45,15 @@ describe("Location picker", () => {
     mount();
     fireEvent.click(screen.getByText("Votre localisation"));
     expect(getCurrentPosition).toHaveBeenCalledTimes(1);
-    fireEvent.click(screen.getByRole("button", { name: "Choisir une ville" }));
     fireEvent.change(screen.getByRole("combobox", { name: "Choisir une ville" }), { target: { value: "Dakar" } });
     await waitFor(() => expect(JSON.parse(screen.getByTestId("position").textContent ?? "null").source).toBe("city"));
+  });
+
+  it("offers GPS and a city immediately without a mode switch", () => {
+    mount();
+    fireEvent.click(screen.getByRole("button", { name: "Utiliser ma position actuelle (GPS)" }));
+    expect(getCurrentPosition).toHaveBeenCalledTimes(1);
+    fireEvent.change(screen.getByRole("combobox", { name: "Choisir une ville" }), { target: { value: "Dakar" } });
+    expect(JSON.parse(screen.getByTestId("position").textContent ?? "null").source).toBe("city");
   });
 });
