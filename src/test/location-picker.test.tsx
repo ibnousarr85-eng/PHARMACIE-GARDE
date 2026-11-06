@@ -1,0 +1,53 @@
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { LocationPicker } from "@/components/garde/LocationPicker";
+import { LocationProvider, useUserLocation } from "@/lib/location";
+
+function Position() {
+  const { location } = useUserLocation();
+  return <output data-testid="position">{JSON.stringify(location)}</output>;
+}
+
+const getCurrentPosition = vi.fn();
+
+function mount() {
+  render(<LocationProvider><LocationPicker /><Position /></LocationProvider>);
+}
+
+describe("Location picker", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    getCurrentPosition.mockReset();
+    getCurrentPosition.mockImplementation((success) => success({ coords: { latitude: 14.7771, longitude: -17.3901 } }));
+    Object.defineProperty(navigator, "geolocation", { configurable: true, value: { getCurrentPosition } });
+  });
+  afterEach(cleanup);
+
+  it.each(["Votre localisation", "Utiliser ma position actuelle"])("requests GPS directly when clicking %s", async (label) => {
+    mount();
+    fireEvent.click(screen.getByText(label));
+    expect(getCurrentPosition).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(JSON.parse(screen.getByTestId("position").textContent ?? "null")).toMatchObject({ lat: 14.7771, lng: -17.3901, source: "gps" }));
+  });
+
+  it("switches to a manual city and back to GPS without changing position on mode selection", async () => {
+    mount();
+    fireEvent.click(screen.getByText("Votre localisation"));
+    fireEvent.click(screen.getByRole("button", { name: "Choisir une ville" }));
+    expect(JSON.parse(screen.getByTestId("position").textContent ?? "null").source).toBe("gps");
+    fireEvent.change(screen.getByRole("combobox", { name: "Choisir une ville" }), { target: { value: "Thiès" } });
+    expect(JSON.parse(screen.getByTestId("position").textContent ?? "null")).toMatchObject({ lat: 14.8255, lng: -17.0997, source: "city" });
+    fireEvent.click(screen.getByRole("button", { name: "Utiliser le GPS" }));
+    await waitFor(() => expect(JSON.parse(screen.getByTestId("position").textContent ?? "null")).toMatchObject({ lat: 14.7771, lng: -17.3901, source: "gps" }));
+  });
+
+  it("keeps manual choice available after GPS permission is denied", async () => {
+    getCurrentPosition.mockImplementation((_success, failure) => failure({ code: 1 }));
+    mount();
+    fireEvent.click(screen.getByText("Votre localisation"));
+    expect(getCurrentPosition).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("button", { name: "Choisir une ville" }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Choisir une ville" }), { target: { value: "Dakar" } });
+    await waitFor(() => expect(JSON.parse(screen.getByTestId("position").textContent ?? "null").source).toBe("city"));
+  });
+});
