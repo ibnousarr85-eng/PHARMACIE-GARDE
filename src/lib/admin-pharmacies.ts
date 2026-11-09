@@ -30,5 +30,5 @@ export const adminPharmaciesQuery = (search: string, city: string, page: number)
   },
 });
 export async function refreshPharmacyViews(client: QueryClient) {
-  await Promise.all(["admin-pharmacies", "nearby", "pharmacy", "public-pharmacy", "med-pharmacies"].map((key) => client.invalidateQueries({ queryKey: [key] })));
+  await Promise.all(["admin-pharmacies", "nearby", "pharmacy", "my-pharmacy", "med-pharmacies"].map((key) => client.invalidateQueries({ queryKey: [key] })));
 }
