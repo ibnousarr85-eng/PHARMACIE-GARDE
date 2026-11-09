@@ -10,5 +10,6 @@
 - [x] Admin approval of pharmacist requests before they can manage a pharmacy
 - [x] Responsive desktop/tablet layout (top nav, 2-col home, list + map, wide detail pages)
 - [x] Add region, department and city pharmacy filters without changing GPS location
+- [ ] Add admin pharmacy search and editing, and verify public on-duty filters
 - [ ] Make Ibnou's account an admin — waiting on the e-mail of his GARDE account
 - [ ] End-to-end test of the pharmacist space — waiting on a real pharmacist account (sign-up needs e-mail confirmation)
