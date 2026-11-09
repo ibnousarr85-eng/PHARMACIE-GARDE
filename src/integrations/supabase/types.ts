@@ -52,6 +52,8 @@ export type Database = {
           address: string | null
           city: string | null
           created_at: string
+          duty_publication: string | null
+          duty_starts_at: string | null
           id: string
           is_on_duty: boolean
           lat: number
@@ -70,6 +72,8 @@ export type Database = {
           address?: string | null
           city?: string | null
           created_at?: string
+          duty_publication?: string | null
+          duty_starts_at?: string | null
           id?: string
           is_on_duty?: boolean
           lat: number
@@ -88,6 +92,8 @@ export type Database = {
           address?: string | null
           city?: string | null
           created_at?: string
+          duty_publication?: string | null
+          duty_starts_at?: string | null
           id?: string
           is_on_duty?: boolean
           lat?: number
@@ -261,6 +267,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_update_pharmacy: {
+        Args: {
+          p_id: string
+          p_on_duty?: boolean
+          p_opening_hours?: string
+          p_phone?: string
+          p_publication?: string
+          p_starts_at?: string
+          p_until?: string
+          p_update_contact?: boolean
+        }
+        Returns: undefined
+      }
       distance_km: {
         Args: { lat1: number; lat2: number; lng1: number; lng2: number }
         Returns: number

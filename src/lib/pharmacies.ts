@@ -32,6 +32,8 @@ export type NearbyFilters = {
 export const nearbyPharmaciesQuery = (f: NearbyFilters) =>
   queryOptions({
     queryKey: ["nearby", f],
+    refetchInterval: 15000,
+    refetchOnWindowFocus: "always",
     queryFn: async () => {
       const args: {
         p_lat: number; p_lng: number; p_search?: string; p_max_km?: number;
@@ -132,6 +134,7 @@ export type PharmacyWithMedicine = {
 export const pharmaciesWithMedicineQuery = (medicineId: string, lat: number, lng: number) =>
   queryOptions({
     queryKey: ["med-pharmacies", medicineId, lat, lng],
+    refetchInterval: 15000,
     queryFn: async () => {
       const { data, error } = await supabase.rpc("pharmacies_with_medicine", {
         p_medicine_id: medicineId,
