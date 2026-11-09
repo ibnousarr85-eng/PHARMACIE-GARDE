@@ -3,7 +3,8 @@
 - Ajouter un onglet « Pharmacies » à côté de « Demandes ».
 - Afficher Dakar par défaut, avec choix d’une autre ville ou de toutes les villes, et recherche par nom ou ville.
 - Présenter les pharmacies réelles avec nom, adresse, ville, téléphone et horaires.
-- Permettre aux administrateurs d’activer ou désactiver la garde immédiatement, et d’enregistrer téléphone et horaires.
+- Permettre aux administrateurs d’activer ou désactiver la garde immédiatement ; le statut reste actif jusqu’à désactivation manuelle.
+- Enregistrer téléphone et horaires, en validant les numéros au format Sénégal (+221 et neuf chiffres), ou en laissant le téléphone vide.
 - Actualiser les résultats publics après modification et vérifier les filtres « De garde » depuis l’accueil et la liste.
 
 ## Détails techniques
