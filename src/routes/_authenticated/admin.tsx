@@ -10,14 +10,16 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsAdmin } from "@/lib/admin";
 import type { Tables } from "@/integrations/supabase/types";
+import { AdminPharmacies } from "@/components/garde/AdminPharmacies";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Administration — Demandes des pharmaciens | GARDE" },
-      { name: "description", content: "Validez ou refusez les demandes des pharmaciens qui souhaitent gérer une officine sur GARDE." },
+      { title: "Administration — Demandes, gardes et numéros | GARDE" },
+      { name: "description", content: "Gérez les demandes des pharmaciens, les gardes vérifiées, les téléphones et les horaires des officines sur GARDE." },
       { property: "og:title", content: "Administration — GARDE" },
-      { property: "og:description", content: "Validation des demandes des pharmaciens." },
+      { property: "og:description", content: "Demandes des pharmaciens, gardes vérifiées et coordonnées des officines." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -42,7 +44,7 @@ function AdminPage() {
     <AppShell size="narrow">
       <BackLink to="/espace-pharmacien" />
       <h1 className="mt-3 text-[28px] font-extrabold tracking-tight text-foreground">Administration</h1>
-      <p className="mb-5 text-sm text-muted-foreground">Demandes des pharmaciens pour gérer une officine.</p>
+      <p className="mb-5 text-sm text-muted-foreground">Demandes et suivi des officines.</p>
 
       {isLoading ? (
         <Loader2 className="mx-auto h-6 w-6 animate-spin text-primary" />
@@ -55,7 +57,12 @@ function AdminPage() {
           </Link>
         </div>
       ) : (
-        <>
+        <Tabs defaultValue="requests">
+          <TabsList className="mb-4 grid h-auto w-full grid-cols-[auto_minmax(0,1fr)]">
+            <TabsTrigger value="requests">Demandes</TabsTrigger>
+            <TabsTrigger value="pharmacies" className="whitespace-normal text-center">Gestion des gardes & numéros</TabsTrigger>
+          </TabsList>
+          <TabsContent value="requests">
           <div className="-mx-5 mb-4 flex gap-2 overflow-x-auto px-5 pb-1">
             {(Object.keys(STATUS_LABEL) as Status[]).map((s) => (
               <Chip key={s} active={status === s} onClick={() => setStatus(s)}>
@@ -64,7 +71,9 @@ function AdminPage() {
             ))}
           </div>
           <RequestList status={status} />
-        </>
+          </TabsContent>
+          <TabsContent value="pharmacies"><AdminPharmacies /></TabsContent>
+        </Tabs>
       )}
     </AppShell>
   );
