@@ -23,3 +23,4 @@
 - Public detail pages load via `src/lib/public.functions.ts` (publishable-key server client) so SSR can set per-page titles.
 - UI is mobile-first: below `md` it stays the max-w-md phone frame from the mockups; `md:` classes add the wide desktop/tablet layout, and `AppShell` `footer` is mobile-only.
 - Interactive maps use Leaflet imported dynamically inside effects (`PharmacyMap`) and mounted only at md+, so SSR never evaluates it.
+- One-off duty imports use privileged data-query tools and replayable SQL scripts with audited UUID plus accent/case-insensitive name and city guards; leave unresolved identities unchanged to prevent cross-city updates.

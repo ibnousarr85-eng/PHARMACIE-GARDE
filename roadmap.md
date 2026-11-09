@@ -1,5 +1,7 @@
 # GARDE — roadmap
 
+- [x] Apply the supplied November DIMO rotation to eight unambiguous existing pharmacies and verify public duty results; eight absent or ambiguous identities left unchanged.
+
 - [x] Import real Senegal pharmacies (OpenStreetMap) into the database
 - [x] Nearest-pharmacy search from user position
 - [x] Medicines catalog + per-pharmacy stock in database
