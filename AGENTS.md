@@ -20,6 +20,7 @@
 - Navigation (bottom tab bar below `md`, `TopNav` header at `md+`) and the `BackLink` pill live in `AppShell`, so every page gets the same navigation.
 - Stock writes go straight from the browser with RLS checking pharmacy ownership; no server function needed.
 - User position lives in `LocationProvider` (src/lib/location.tsx), persisted in localStorage, with a city fallback list when GPS is denied.
+- GPS requests retry unavailable or timed-out high-accuracy fixes once at lower accuracy, but never retry denied permission, so mobile failures recover without repeated permission requests.
 - Public detail pages load via `src/lib/public.functions.ts` (publishable-key server client) so SSR can set per-page titles.
 - UI is mobile-first: below `md` it stays the max-w-md phone frame from the mockups; `md:` classes add the wide desktop/tablet layout, and `AppShell` `footer` is mobile-only.
 - Interactive maps use Leaflet imported dynamically inside effects (`PharmacyMap`) and mounted only at md+, so SSR never evaluates it.
