@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LocationPicker } from "@/components/garde/LocationPicker";
 import { LocationProvider, useUserLocation } from "@/lib/location";
@@ -62,12 +62,12 @@ describe("Location picker", () => {
     mount();
     fireEvent.click(screen.getByRole("button", { name: "Utiliser ma position actuelle (GPS)" }));
     expect(getCurrentPosition).toHaveBeenCalledTimes(2);
-    expect(getCurrentPosition.mock.calls[0][2]).toEqual({ enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
-    expect(getCurrentPosition.mock.calls[1][2]).toEqual({ enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 });
+    expect(getCurrentPosition.mock.calls[0]?.[2]).toEqual({ enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 });
+    expect(getCurrentPosition.mock.calls[1]?.[2]).toEqual({ enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 });
     await waitFor(() => expect(JSON.parse(screen.getByTestId("position").textContent ?? "null")).toMatchObject({ lat: 14.7771, lng: -17.3901, source: "gps" }));
   });
 
-  it.each([1, 2, 3])("stops after the final error code %s and preserves the selected city", () => {
+  it.each([1, 2, 3])("stops after the final error code %s and preserves the selected city", (code) => {
     getCurrentPosition.mockImplementation((_success, failure) => failure({ code: 3 }));
     getCurrentPosition.mockImplementationOnce((_success, failure) => failure({ code: 3 }));
     getCurrentPosition.mockImplementationOnce((_success, failure) => failure({ code }));
@@ -97,7 +97,7 @@ describe("Location picker", () => {
     fireEvent.click(screen.getByText("Votre localisation"));
     expect(getCurrentPosition).toHaveBeenCalledTimes(2);
     expect(screen.getByRole("button", { name: "Utiliser ma position actuelle (GPS)" })).toBeDisabled();
-    finish?.({ coords: { latitude: 14.7771, longitude: -17.3901 } } as GeolocationPosition);
+    act(() => finish?.({ coords: { latitude: 14.7771, longitude: -17.3901 } } as GeolocationPosition));
     await waitFor(() => expect(screen.getByRole("button", { name: "Utiliser ma position actuelle (GPS)" })).toBeEnabled());
   });
 });
