@@ -1,5 +1,7 @@
 # GARDE — roadmap
 
+- [x] Harden GPS retries and precise errors; verify both home controls, mobile loading feedback, and all 25 tests.
+
 - [x] Apply the supplied November DIMO rotation to eight unambiguous existing pharmacies and verify public duty results; eight absent or ambiguous identities left unchanged.
 
 - [x] Import real Senegal pharmacies (OpenStreetMap) into the database

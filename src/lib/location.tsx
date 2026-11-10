@@ -51,8 +51,7 @@ export function LocationProvider({ children }: { children: ReactNode }) {
       }
       setLocating(true);
       setError(null);
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
+      const onSuccess = (pos: GeolocationPosition) => {
           const loc: UserLocation = {
             lat: pos.coords.latitude,
             lng: pos.coords.longitude,
@@ -60,13 +59,32 @@ export function LocationProvider({ children }: { children: ReactNode }) {
             source: "gps",
           };
           save(loc);
+          setError(null);
           setLocating(false);
           resolve(loc);
-        },
-        () => {
-          setError("Position refusée ou introuvable. Choisissez votre ville.");
+      };
+      const onFailure = (error: GeolocationPositionError) => {
+          const messages: Record<number, string> = {
+            1: "Autorisation de localisation refusée. Veuillez autoriser l'accès au GPS dans les paramètres de votre navigateur.",
+            2: "Signal GPS introuvable sur votre appareil. Activez votre localisation ou choisissez votre ville.",
+            3: "Délai de localisation dépassé. Réessayez ou choisissez votre ville ci-dessous.",
+          };
+          setError(messages[error.code] ?? "Localisation indisponible. Réessayez ou choisissez votre ville ci-dessous.");
           setLocating(false);
           resolve(null);
+      };
+      navigator.geolocation.getCurrentPosition(
+        onSuccess,
+        (error) => {
+          if (error.code === 2 || error.code === 3) {
+            navigator.geolocation.getCurrentPosition(
+              onSuccess,
+              onFailure,
+              { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 },
+            );
+            return;
+          }
+          onFailure(error);
         },
         { enableHighAccuracy: true, timeout: 12000, maximumAge: 60000 },
       );
