@@ -8,7 +8,7 @@ import { Chip, SearchInput } from "@/components/garde/SearchInput";
 import { Button } from "@/components/ui/button";
 import { medicineSearchQuery } from "@/lib/pharmacies";
 
-const QUICK = ["Paracétamol", "Amoxicilline", "Ibuprofène", "Vitamines", "Antipaludique"];
+const QUICK = ["Doliprane", "Coartem", "Spasfon", "Amoxicilline", "Smecta"];
 
 export const Route = createFileRoute("/medicaments/")({
   validateSearch: z.object({ q: z.string().optional() }),
