@@ -26,3 +26,4 @@
 - UI is mobile-first: below `md` it stays the max-w-md phone frame from the mockups; `md:` classes add the wide desktop/tablet layout, and `AppShell` `footer` is mobile-only.
 - Interactive maps use Leaflet imported dynamically inside effects (`PharmacyMap`) and mounted only at md+, so SSR never evaluates it.
 - One-off duty imports use privileged data-query tools and replayable SQL scripts with audited UUID plus accent/case-insensitive name and city guards; leave unresolved identities unchanged to prevent cross-city updates.
+- Permanent directory evidence is stored separately from duty_rotations; imported conversation claims remain unverified candidates, and only uniquely matched pharmacies with exact existing coordinates can be linked. Rotations use dated source evidence and never populate habitual hours.
