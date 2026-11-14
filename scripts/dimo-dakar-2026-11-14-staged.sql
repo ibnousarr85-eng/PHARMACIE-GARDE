@@ -1,3 +1,6 @@
+-- STAGING ONLY: source evidence retained for audit; not an applied import.
+-- The applied rotation import uses evidence_key dimo:2026-11-14:<slug>.
+-- Do not execute this file: it would duplicate the already applied rotations.
 INSERT INTO public.pharmacy_directory_candidates(evidence_key,pharmacy_id,name,address,city,locality,region,phone,habitual_hours,source,source_url,validation_status,note) VALUES
 ('dimo:2026-11-14:https://dimomed.com/structures-de-sante/pharmacie-guigon/','fe8c437e-ca9c-4233-a13f-3d3ac829bc27','Pharmacie Guigon','Av Pompidou, Plateau','Dakar',NULL,'Dakar','+221338230333',NULL,'DIMO Santé — rotation consultée le 14 novembre 2026','https://dimomed.com/structures-de-sante/pharmacie-guigon/','source_checked','Horaires publiés sur la liste de garde : 🕐 07h-22h. Leur nature habituelle/de garde n’est pas explicitement confirmée.'),
 ('dimo:2026-11-14:https://dimomed.com/structures-de-sante/pharmacie-abdoul-aziz-vezia/',NULL,'Pharmacie Abdoul Aziz Vezia','Près du Stade Municipal Ibrahima Boye (Ex Ndiarème)','Dakar',NULL,'Dakar','+221338371303',NULL,'DIMO Santé — rotation consultée le 14 novembre 2026','https://dimomed.com/structures-de-sante/pharmacie-abdoul-aziz-vezia/','source_checked','Horaires publiés sur la liste de garde : 🕐 08h-23h. Leur nature habituelle/de garde n’est pas explicitement confirmée.'),
