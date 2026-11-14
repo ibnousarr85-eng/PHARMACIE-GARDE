@@ -34,4 +34,16 @@ describe("Public directory filters", () => {
       if (name.includes("Chifaoun")) expect(data?.[0]?.opening_hours).toBeNull();
     }
   });
+  it("completes the sourced active directory phones and preserves unavailable habitual schedules", async () => {
+    const { data, error } = await supabase.rpc("search_pharmacy_directory", { ...base, p_on_duty: true, p_at: "2026-11-14T12:00:00Z" });
+    expect(error).toBeNull(); expect((data ?? []).length).toBeGreaterThanOrEqual(33);
+    expect(data?.every(p => /^\+221\d{9}$/.test(p.phone ?? ""))).toBe(true);
+    expect(data?.every(p => Boolean(p.address?.trim()))).toBe(true);
+    const shelter = data?.find(p => p.name === "Pharmacie Shelter");
+    expect(shelter?.phone).toBe("+221338274329");
+    expect(shelter?.opening_hours).toBe("Lun-Sam 08h–23h ; Dim fermé");
+    expect(data?.find(p => p.name === "Pharmacie Principale")?.phone).toBe("+221338346923");
+    expect(data?.find(p => p.name === "Pharmacie Principale")?.opening_hours).toBeNull();
+    expect(data?.find(p => p.name === "Pharmacie Sud Foire")?.opening_hours).toBeNull();
+  });
 });

@@ -1,5 +1,8 @@
 # GARDE — roadmap
 
+- [x] Check all 34 active pharmacy DIMO pages: all now have phones and addresses, 26 have complete habitual schedules; eight absent/malformed/homonymous schedules remain unknown. Archive evidence and additional numbers; show uncertain published hours separately. Twelve targeted tests pass; search/detail/calls and mobile rendering verified.
+- [ ] Complete eight remaining habitual schedules — blocked by missing/malformed DIMO hours (Renaissance, Fass, Sud Foire, Mandela, Centrale, Chifaoun, Moderne) and a Thiès homonym linked to Principale in Pikine; requires corrected publication or pharmacy confirmation.
+
 - [x] Enrich the demonstration directory from ten additional live DIMO details: five existing entries enriched, Cheikh Marie Saliou and Chifaoun added with dated rotations; three conflicting positions retained for review. Public search, phone links, dates and mobile details verified; existing demo stocks unchanged.
 
 - [x] Recover supplied directory lists as unverified candidates without overwriting conflicting existing contacts (23 previous rows and 22 newly cited rows retained).
