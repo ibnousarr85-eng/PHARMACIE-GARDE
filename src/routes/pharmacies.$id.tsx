@@ -124,6 +124,7 @@ function PharmacyDetail() {
             <span className="mt-1 block text-sm font-normal text-muted-foreground">
               Horaires de garde : {p.duty?.duty_hours || "Non renseigné"}
             </span>
+            {!p.duty?.duty_hours && p.duty?.published_hours && <span className="mt-1 block text-sm font-normal text-muted-foreground">Horaires affichés sur la publication DIMO : {p.duty.published_hours} — nature habituelle ou de garde non confirmée.</span>}
             {p.duty && <span className="mt-1 block text-xs font-normal text-muted-foreground">Du {formatDateTime(p.duty.starts_at)} au {formatDateTime(p.duty.ends_at)} · {p.duty.source}</span>}
           </InfoCard>
           <InfoCard icon={<Clock className="h-4 w-4" />} label="Horaires habituels">{hours || "Non renseigné"}</InfoCard>
