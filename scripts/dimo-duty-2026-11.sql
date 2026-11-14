@@ -1,3 +1,5 @@
+-- ARCHIVE : import historique déjà appliqué. Ne pas réexécuter après la
+-- séparation du répertoire et des rotations : opening_hours n'est plus utilisé.
 -- À exécuter uniquement avec l'outil privilégié de changement de données.
 -- Données fournies par l'utilisateur : DIMO, non confirmées SPPS/ARP.
 -- Ne crée aucune officine et ne modifie ni propriétaires ni permissions.

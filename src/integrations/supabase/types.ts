@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      duty_rotations: {
+        Row: {
+          checked_at: string | null
+          duty_hours: string | null
+          ends_at: string
+          evidence_key: string
+          id: string
+          note: string | null
+          pharmacy_id: string
+          published_hours: string | null
+          source: string
+          source_url: string | null
+          starts_at: string
+          validation_status: string
+        }
+        Insert: {
+          checked_at?: string | null
+          duty_hours?: string | null
+          ends_at: string
+          evidence_key: string
+          id?: string
+          note?: string | null
+          pharmacy_id: string
+          published_hours?: string | null
+          source: string
+          source_url?: string | null
+          starts_at: string
+          validation_status?: string
+        }
+        Update: {
+          checked_at?: string | null
+          duty_hours?: string | null
+          ends_at?: string
+          evidence_key?: string
+          id?: string
+          note?: string | null
+          pharmacy_id?: string
+          published_hours?: string | null
+          source?: string
+          source_url?: string | null
+          starts_at?: string
+          validation_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "duty_rotations_pharmacy_id_fkey"
+            columns: ["pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       medicines: {
         Row: {
           category: string | null
@@ -50,11 +103,16 @@ export type Database = {
       pharmacies: {
         Row: {
           address: string | null
+          checked_at: string | null
           city: string | null
+          commune: string | null
           created_at: string
+          department: string | null
           duty_publication: string | null
           duty_starts_at: string | null
+          habitual_hours: string | null
           id: string
+          information_source: string | null
           is_on_duty: boolean
           lat: number
           lng: number
@@ -65,16 +123,23 @@ export type Database = {
           osm_id: string | null
           owner_id: string | null
           phone: string | null
+          region: string | null
           source: string
           updated_at: string
+          validation_status: string
         }
         Insert: {
           address?: string | null
+          checked_at?: string | null
           city?: string | null
+          commune?: string | null
           created_at?: string
+          department?: string | null
           duty_publication?: string | null
           duty_starts_at?: string | null
+          habitual_hours?: string | null
           id?: string
+          information_source?: string | null
           is_on_duty?: boolean
           lat: number
           lng: number
@@ -85,16 +150,23 @@ export type Database = {
           osm_id?: string | null
           owner_id?: string | null
           phone?: string | null
+          region?: string | null
           source?: string
           updated_at?: string
+          validation_status?: string
         }
         Update: {
           address?: string | null
+          checked_at?: string | null
           city?: string | null
+          commune?: string | null
           created_at?: string
+          department?: string | null
           duty_publication?: string | null
           duty_starts_at?: string | null
+          habitual_hours?: string | null
           id?: string
+          information_source?: string | null
           is_on_duty?: boolean
           lat?: number
           lng?: number
@@ -105,8 +177,10 @@ export type Database = {
           osm_id?: string | null
           owner_id?: string | null
           phone?: string | null
+          region?: string | null
           source?: string
           updated_at?: string
+          validation_status?: string
         }
         Relationships: []
       }
@@ -175,6 +249,80 @@ export type Database = {
           source?: string
         }
         Relationships: []
+      }
+      pharmacy_directory_candidates: {
+        Row: {
+          address: string | null
+          checked_at: string | null
+          city: string | null
+          commune: string | null
+          department: string | null
+          evidence_key: string
+          habitual_hours: string | null
+          id: string
+          lat: number | null
+          lng: number | null
+          locality: string | null
+          name: string
+          note: string | null
+          pharmacy_id: string | null
+          phone: string | null
+          region: string | null
+          source: string
+          source_url: string | null
+          validation_status: string
+        }
+        Insert: {
+          address?: string | null
+          checked_at?: string | null
+          city?: string | null
+          commune?: string | null
+          department?: string | null
+          evidence_key: string
+          habitual_hours?: string | null
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          locality?: string | null
+          name: string
+          note?: string | null
+          pharmacy_id?: string | null
+          phone?: string | null
+          region?: string | null
+          source: string
+          source_url?: string | null
+          validation_status?: string
+        }
+        Update: {
+          address?: string | null
+          checked_at?: string | null
+          city?: string | null
+          commune?: string | null
+          department?: string | null
+          evidence_key?: string
+          habitual_hours?: string | null
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          locality?: string | null
+          name?: string
+          note?: string | null
+          pharmacy_id?: string | null
+          phone?: string | null
+          region?: string | null
+          source?: string
+          source_url?: string | null
+          validation_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pharmacy_directory_candidates_pharmacy_id_fkey"
+            columns: ["pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pharmacy_requests: {
         Row: {
@@ -306,6 +454,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_save_directory: {
+        Args: { p_data: Json; p_id: string }
+        Returns: string
+      }
+      admin_save_rotation: {
+        Args: {
+          p_duty_hours: string
+          p_ends_at: string
+          p_id: string
+          p_pharmacy_id: string
+          p_source: string
+          p_starts_at: string
+          p_status: string
+        }
+        Returns: undefined
+      }
       admin_update_pharmacy: {
         Args: {
           p_id: string
@@ -426,6 +590,20 @@ export type Database = {
           stock_updated_at: string
         }[]
       }
+      pharmacy_duty_at: {
+        Args: { p_at?: string; p_id: string }
+        Returns: {
+          checked_at: string
+          duty_hours: string
+          ends_at: string
+          id: string
+          published_hours: string
+          source: string
+          source_url: string
+          starts_at: string
+          validation_status: string
+        }[]
+      }
       pharmacy_geographic_options: {
         Args: never
         Returns: {
@@ -437,6 +615,36 @@ export type Database = {
       review_pharmacy_request: {
         Args: { p_approve: boolean; p_note?: string; p_request_id: string }
         Returns: undefined
+      }
+      search_pharmacy_directory: {
+        Args: {
+          p_at?: string
+          p_city?: string
+          p_department?: string
+          p_lat: number
+          p_limit?: number
+          p_lng: number
+          p_max_km?: number
+          p_offset?: number
+          p_on_duty?: boolean
+          p_region?: string
+          p_search?: string
+          p_with_phone?: boolean
+        }
+        Returns: {
+          address: string
+          city: string
+          distance_km: number
+          id: string
+          lat: number
+          lng: number
+          locality: string
+          name: string
+          on_duty: boolean
+          on_duty_until: string
+          opening_hours: string
+          phone: string
+        }[]
       }
     }
     Enums: {

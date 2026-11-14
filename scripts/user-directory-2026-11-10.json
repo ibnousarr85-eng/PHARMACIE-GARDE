@@ -1,0 +1,209 @@
+[
+  {
+    "name": "PHARMACIE BOISSON",
+    "address": "3 Rue Parent, Place Kermel",
+    "phone": "+221338211714",
+    "locality": "PLATEAU",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE GUIGON",
+    "address": "101 av Président Lamine Guèye",
+    "phone": "+221338234363",
+    "locality": "PLATEAU",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE KERMEL",
+    "address": "Marché Kermel",
+    "phone": "+221338224334",
+    "locality": "PLATEAU",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE DE LA REPUBLIQUE",
+    "address": "15 Boulevard de la République",
+    "phone": "+221338211663",
+    "locality": "PLATEAU",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE NELSON MANDELA",
+    "address": "10, Avenue Nelson MANDELA",
+    "phone": "+221338212172",
+    "locality": "PLATEAU",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE DU GUET",
+    "address": "Rue Huart x A. Sarrault",
+    "phone": "+221338216820",
+    "locality": "PLATEAU",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE PASTEUR",
+    "address": "AV. Pasteur coté station shell",
+    "phone": "+221338217035",
+    "locality": "PLATEAU",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE FANN",
+    "address": "Av Cheikh Anta DIOP",
+    "phone": "+221338691818",
+    "locality": "FANN",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE AIME CESAIRE",
+    "address": "Fann résidence (Ouvert 24h/24 7j/7)",
+    "phone": "+221338254423",
+    "locality": "FANN",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE OUAKAM",
+    "address": "Km 8,1 Av. Cheikh Anta DIOP",
+    "phone": "+221338201500",
+    "locality": "OUAKAM",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE MADINATOUL MOUNAWARA",
+    "address": "Immeuble Tour Fenêtre Mermoz",
+    "phone": "+221338258862",
+    "locality": "MERMOZ",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE DEMBA KOÏTA",
+    "address": "Sicap Keur Gorgui (Ouvert 24h/24 7j/7)",
+    "phone": "+221338257979",
+    "locality": "SACRE COEUR",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE VDN",
+    "address": "Sacré Cœur 3",
+    "phone": "+221338275683",
+    "locality": "SACRE COEUR",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE MAME OUMY GUEYE",
+    "address": "Sacré Cœur Pyrotechnie Lot 87",
+    "phone": "+221338255999",
+    "locality": "SACRE COEUR",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE SELMA",
+    "address": "Sicap Amitié 3 n°4428 EN FACE ECOLE POLICE",
+    "phone": "+221338647310",
+    "locality": "SICAP AMITIE 3",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE BOURGUIBA",
+    "address": "BP 15 166 Dakar Fann",
+    "phone": "+221338245992",
+    "locality": "AVENUE BOURGUIBA",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE CONSEIL",
+    "address": "45 bis, Cité Sonatel II Sud Foire",
+    "phone": "+221338276162",
+    "locality": "LIBERTE 6 SCAT URBAM",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE MOTA",
+    "address": "Route de l'Aéroport en face cité BCEAO",
+    "phone": "+221338206464",
+    "locality": "NORD FOIRE",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE MAME DIARRA BOUSSO",
+    "address": "Cité Soprim",
+    "phone": "+221338357888",
+    "locality": "CITE SOPRIM",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE TOUBA CITE BELLEVUE",
+    "address": "Hann Maristes cité Bellevue",
+    "phone": "+221338324108",
+    "locality": "HANN MARISTE",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE TOUBA",
+    "address": "Route des Maristes",
+    "phone": "+221338325951",
+    "locality": "HANN MARISTE",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE SICAP MBAO",
+    "address": "Sicap Mbao N° 315 Ts",
+    "phone": "+221338345246",
+    "locality": "ZAC MBAO",
+    "city": "Dakar",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  },
+  {
+    "name": "PHARMACIE ADJA MARIETOU DIAGNE",
+    "address": "CITE ORSTOM RUFISQUE OUEST N°78",
+    "phone": "+221338979128",
+    "locality": "RUFISQUE",
+    "city": "Rufisque",
+    "source": "Liste utilisateur du 10 novembre 2026",
+    "validation_status": "unverified"
+  }
+]

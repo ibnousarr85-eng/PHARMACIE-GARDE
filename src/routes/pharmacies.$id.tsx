@@ -116,15 +116,20 @@ function PharmacyDetail() {
             {p.on_duty ? (
               <span className="text-success">
                 De garde
-                {p.on_duty_until ? ` jusqu'au ${formatDateTime(p.on_duty_until)}` : " actuellement"}
+                {p.on_duty_until ? ` jusqu'au ${formatDateTime(new Date(Date.parse(p.on_duty_until)-1).toISOString())}` : " actuellement"}
               </span>
             ) : (
               <span>Pas de garde déclarée</span>
             )}
             <span className="mt-1 block text-sm font-normal text-muted-foreground">
-              {hours ? `Horaires habituels : ${hours}` : "Horaires habituels non renseignés"}
+              Horaires de garde : {p.duty?.duty_hours || "Non renseigné"}
             </span>
+            {p.duty && <span className="mt-1 block text-xs font-normal text-muted-foreground">Du {formatDateTime(p.duty.starts_at)} au {formatDateTime(p.duty.ends_at)} · {p.duty.source}</span>}
           </InfoCard>
+          <InfoCard icon={<Clock className="h-4 w-4" />} label="Horaires habituels">{hours || "Non renseigné"}</InfoCard>
+          <InfoCard icon={<MapPin className="h-4 w-4" />} label="Localisation"><span className="text-sm">Région : {p.region || "Non renseigné"}<br />Département : {p.department || "Non renseigné"}<br />Commune : {p.commune || "Non renseigné"}<br />Quartier : {p.locality || "Non renseigné"}</span></InfoCard>
+          <InfoCard icon={<Info className="h-4 w-4" />} label="Source et validation"><span className="text-sm">{p.information_source || "Non renseigné"}<br />{p.validation_status === "validated" ? "Validé" : p.validation_status === "source_checked" ? "Source consultée — à confirmer auprès de l’officine" : "Non vérifié"}<br />Vérification : {p.checked_at ? formatDateTime(p.checked_at) : "Non renseigné"}</span></InfoCard>
+          {p.rotations.length > 0 && <details className="rounded-2xl border border-border bg-card p-4 lg:col-span-2"><summary className="cursor-pointer font-semibold">Historique des rotations</summary><ul className="mt-3 divide-y divide-border">{p.rotations.map(r => <li key={r.id} className="py-3 text-sm">Du {formatDateTime(r.starts_at)} au {formatDateTime(new Date(Date.parse(r.ends_at)-1).toISOString())}<br />Horaires de garde : {r.duty_hours || "Non renseigné"}<br /><span className="text-muted-foreground">{r.source} · Vérification : {r.checked_at ? formatDateTime(r.checked_at) : "Non renseigné"}</span></li>)}</ul></details>}
         </div>
 
         <div className="space-y-4 md:sticky md:top-28 md:col-start-2 md:row-span-2 md:row-start-1">

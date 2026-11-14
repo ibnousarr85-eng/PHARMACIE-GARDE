@@ -1,5 +1,10 @@
 # GARDE — roadmap
 
+- [x] Recover supplied directory lists as unverified candidates without overwriting conflicting existing contacts (23 previous rows and 22 newly cited rows retained).
+- [x] Separate permanent directory metadata and historic duty rotations; extend existing public search/detail and admin management without redesign.
+- [x] Verify DIMO publication for 14 November 2026: all 95 source entries archived, 31 uniquely matched rotations imported for 14–21 November; 64 identities await exact location/identity checks, never invented.
+- [x] Test search filters, active dates, admin access controls and existing public UI (35 tests pass; signed-in non-admin denied, public desktop/mobile verified).
+
 - [x] Add isolated Soutenance demo stocks to the eight audited pharmacies; verify medicine search, distance ordering, labels, real-only mode and phone links (28 tests pass, desktop/mobile flow checked).
 
 - [x] Harden GPS retries and precise errors; verify both home controls, mobile loading feedback, and all 25 tests.
@@ -18,5 +23,5 @@
 - [x] Add region, department and city pharmacy filters without changing GPS location
 - [x] Add admin pharmacy search, contact editing and publication-backed duty activation; verify the public on-duty navigation and validation tests
 - [ ] Verify admin edits end-to-end and read back through public filters — waiting on an authorized admin account; none exists yet
-- [ ] Make Ibnou's account an admin — waiting on the e-mail of his GARDE account
+- [ ] Make Ibnou's account an admin — account identified, waiting on explicit approval to grant administrator access
 - [ ] End-to-end test of the pharmacist space — waiting on a real pharmacist account (sign-up needs e-mail confirmation)
