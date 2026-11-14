@@ -17,7 +17,7 @@ export function RotationEditor({ pharmacyId }: { pharmacyId: string }) {
     const { data, error } = await supabase.from("duty_rotations").select("*").eq("pharmacy_id", pharmacyId).order("starts_at", { ascending: false }); if(error) throw error; return data ?? [];
   }});
   const save = useMutation({ mutationFn: async () => {
-    const { error } = await supabase.rpc("admin_save_rotation", { p_id: edit && edit !== "new" ? edit.id : null, p_pharmacy_id: pharmacyId, ...validateRotation(source, starts, ends), p_duty_hours: hours.trim(), p_status: status }); if(error) throw error;
+    const { error } = await supabase.rpc("admin_save_rotation", { p_id: edit && edit !== "new" ? edit.id : "00000000-0000-0000-0000-000000000000", p_pharmacy_id: pharmacyId, ...validateRotation(source, starts.endsWith("Z") ? starts : `${starts}Z`, ends.endsWith("Z") ? ends : `${ends}Z`), p_duty_hours: hours.trim(), p_status: status }); if(error) throw error;
   }, onSuccess: async () => { setEdit(null); await refreshPharmacyViews(client); toast.success("Rotation enregistrée"); }, onError: (e: Error) => toast.error(e.message) });
   const open = (r: Tables<"duty_rotations"> | "new") => { setEdit(r); setStarts(r === "new" ? "" : r.starts_at.slice(0,16)); setEnds(r === "new" ? "" : r.ends_at.slice(0,16)); setHours(r === "new" ? "" : r.duty_hours ?? ""); setSource(r === "new" ? "" : r.source); setStatus(r === "new" ? "source_checked" : r.validation_status); };
   return <section className="my-4 border-t border-border pt-4">

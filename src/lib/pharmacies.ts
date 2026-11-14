@@ -27,7 +27,7 @@ export type NearbyFilters = {
   region?: string | undefined;
   department?: string | undefined;
   city?: string | undefined;
-  at?: string;
+  at?: string | undefined;
   offset?: number;
 };
 

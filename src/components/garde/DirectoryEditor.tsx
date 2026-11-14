@@ -11,7 +11,7 @@ export function DirectoryEditor({ pharmacy, close }: { pharmacy?: Tables<"pharma
   const client = useQueryClient();
   const [values, setValues] = useState({ name: pharmacy?.name ?? "", address: pharmacy?.address ?? "", city: pharmacy?.city ?? "", region: pharmacy?.region ?? "", department: pharmacy?.department ?? "", commune: pharmacy?.commune ?? "", locality: pharmacy?.locality ?? "", phone: pharmacy?.phone ?? "", habitual_hours: pharmacy?.habitual_hours ?? "", information_source: pharmacy?.information_source ?? "", lat: String(pharmacy?.lat ?? ""), lng: String(pharmacy?.lng ?? ""), validation_status: pharmacy?.validation_status ?? "unverified" });
   const save = useMutation({ mutationFn: async () => {
-    const { error } = await supabase.rpc("admin_save_directory", { p_id: pharmacy?.id ?? null, p_data: { ...values, phone: normalizeSenegalPhone(values.phone) } });
+    const { error } = await supabase.rpc("admin_save_directory", { p_id: pharmacy?.id ?? "00000000-0000-0000-0000-000000000000", p_data: { ...values, phone: normalizeSenegalPhone(values.phone) } });
     if (error) throw error;
   }, onSuccess: async () => { await refreshPharmacyViews(client); close(); toast.success("Informations enregistrées"); }, onError: (e: Error) => toast.error(e.message) });
   const fields = { name: "Nom", address: "Adresse complète", city: "Ville", region: "Région", department: "Département", commune: "Commune", locality: "Quartier", phone: "Téléphone", habitual_hours: "Horaires habituels", information_source: "Source de l’information", lat: "Latitude exacte", lng: "Longitude exacte" } as const;
