@@ -29,6 +29,13 @@
       "when": 1794253786077,
       "tag": "0003_admin_pharmacy_management",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794696045844,
+      "tag": "0004_separate_soutenance_stock",
+      "breakpoints": true
     }
   ]
 }

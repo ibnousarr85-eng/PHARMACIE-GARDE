@@ -6,8 +6,12 @@ import { Button } from "@/components/ui/button";
 import { getPharmacyPublic } from "@/lib/public.functions";
 import { pharmacyStockQuery } from "@/lib/pharmacies";
 import { directionsHref, formatDateTime, formatHours, telHref } from "@/lib/format";
+import { z } from "zod";
+import { DemoNotice } from "@/components/garde/DemoNotice";
+import { demoPharmacyStockQuery } from "@/lib/demo-stock";
 
 export const Route = createFileRoute("/pharmacies/$id")({
+  validateSearch: z.object({ demo: z.boolean().default(false) }),
   loader: async ({ params }) => {
     const pharmacy = await getPharmacyPublic({ data: { id: params.id } });
     if (!pharmacy) throw notFound();
@@ -44,6 +48,8 @@ export const Route = createFileRoute("/pharmacies/$id")({
 
 function PharmacyDetail() {
   const p = Route.useLoaderData();
+  const { demo } = Route.useSearch();
+  const demoStock = useQuery({ ...demoPharmacyStockQuery(p.id), enabled: demo });
   const { data: stock } = useQuery(pharmacyStockQuery(p.id));
   const hours = formatHours(p.opening_hours);
   const d = 0.006;
@@ -84,6 +90,7 @@ function PharmacyDetail() {
         {p.name}
       </h1>
       <p className="mb-4 font-semibold text-foreground/85">Informations sur la pharmacie</p>
+      {demo && <DemoNotice />}
 
       {p.managed && (
         <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-success">
@@ -146,14 +153,15 @@ function PharmacyDetail() {
             </p>
           ) : (
             <ul className="divide-y divide-border">
-              {available.map((s) => (
+              {available.map((s) => s.medicine ? (
                 <li
                   key={s.medicine?.id}
                   className="flex items-center justify-between gap-3 py-2 text-sm"
                 >
                   <Link
                     to="/medicaments/$id"
-                    params={{ id: s.medicine!.id }}
+                    params={{ id: s.medicine.id }}
+                    search={{ demo: false }}
                     className="font-semibold text-foreground"
                   >
                     {s.medicine?.name}{" "}
@@ -169,8 +177,24 @@ function PharmacyDetail() {
                     )}
                   </span>
                 </li>
-              ))}
+              ) : null)}
             </ul>
+          )}
+          {demo && (
+            <section className="mt-6 border-t border-border pt-4">
+              <h2 className="font-bold text-secondary-foreground">Stocks indicatifs — Soutenance</h2>
+              {demoStock.isError && <p role="alert" className="mt-2 text-destructive">Impossible de charger les stocks de démonstration.</p>}
+              {demoStock.isLoading && <p className="mt-2 text-muted-foreground">Chargement…</p>}
+              {demoStock.data?.length === 0 && <p className="mt-2 text-muted-foreground">Aucun stock de démonstration.</p>}
+              <ul className="mt-2 divide-y divide-border">
+                {demoStock.data?.map((s) => s.medicine ? (
+                  <li key={s.medicine.id} className="flex flex-wrap justify-between gap-2 py-3 text-sm">
+                    <Link className="font-semibold text-primary" to="/medicaments/$id" params={{ id: s.medicine.id }} search={{ demo: true }}>{s.medicine.name} {s.medicine.dosage === "—" ? "" : s.medicine.dosage}</Link>
+                    <span className="text-secondary-foreground">{s.quantity} unités fictives · {s.price_fcfa.toLocaleString("fr-FR")} FCFA indicatifs</span>
+                  </li>
+                ) : null)}
+              </ul>
+            </section>
           )}
         </div>
       </div>

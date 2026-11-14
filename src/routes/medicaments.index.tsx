@@ -7,6 +7,7 @@ import { AppShell, BackLink } from "@/components/garde/AppShell";
 import { Chip, SearchInput } from "@/components/garde/SearchInput";
 import { Button } from "@/components/ui/button";
 import { medicineSearchQuery } from "@/lib/pharmacies";
+import { DemoNotice } from "@/components/garde/DemoNotice";
 
 const QUICK = ["Doliprane", "Coartem", "Spasfon", "Amoxicilline", "Smecta"];
 
@@ -38,6 +39,7 @@ function MedicinesPage() {
       <BackLink to="/" />
       <h1 className="mt-3 text-[30px] font-extrabold tracking-tight text-foreground md:text-4xl">Rechercher un médicament</h1>
       <p className="mb-5 text-muted-foreground">Trouvez les pharmacies proches qui l'ont en stock.</p>
+      <DemoNotice />
 
       <form
         onSubmit={(e) => {
@@ -91,7 +93,7 @@ function MedicinesPage() {
             </p>
             <p className="mt-3 flex items-start gap-2 rounded-xl border-l-4 border-primary bg-muted p-3 text-sm text-muted-foreground">
               <Info className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-              {m.category ? `${m.category}. ` : ""}Stock mis à jour par les pharmacies.
+              {m.category ? `${m.category}. ` : ""}Stocks réels déclarés et stocks indicatifs de soutenance séparés.
             </p>
             <div className="flex-1" />
             <Button

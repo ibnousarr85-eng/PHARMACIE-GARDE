@@ -13,6 +13,7 @@ type Props = {
   on_duty: boolean;
   distance_km: number;
   extra?: React.ReactNode;
+  demo?: boolean;
 };
 
 export function PharmacyCard(p: Props) {
@@ -59,7 +60,7 @@ export function PharmacyCard(p: Props) {
       {p.extra}
       <div className="flex-1" />
       <Button asChild size="lg" className="mt-4 h-12 w-full rounded-2xl text-base font-bold">
-        <Link to="/pharmacies/$id" params={{ id: p.id }}>
+        <Link to="/pharmacies/$id" params={{ id: p.id }} search={{ demo: p.demo ?? false }}>
           Voir les détails
         </Link>
       </Button>
