@@ -11,8 +11,12 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { geographicOptionsQuery } from "@/lib/pharmacies";
 import { adminPharmaciesQuery, DEFAULT_ADMIN_CITY, normalizeSenegalPhone, refreshPharmacyViews, validateDuty } from "@/lib/admin-pharmacies";
+import { DirectoryEditor } from "@/components/garde/DirectoryEditor";
+import { RotationEditor } from "@/components/garde/RotationEditor";
+import { activeDuty } from "@/lib/duty";
 
 export function AdminPharmacies() {
+  const [adding, setAdding] = useState(false);
   const [text, setText] = useState("");
   const [search, setSearch] = useState("");
   const [city, setCity] = useState(DEFAULT_ADMIN_CITY);
@@ -22,6 +26,8 @@ export function AdminPharmacies() {
   const cities = [...new Set([DEFAULT_ADMIN_CITY, ...(options.data ?? []).flatMap((row) => row.city ? [row.city] : [])])].sort((a, b) => a.localeCompare(b, "fr"));
   const { data, isPending, error, refetch } = useQuery(adminPharmaciesQuery(search, city, page));
   return <section className="space-y-4">
+    <Button variant="outline" onClick={() => setAdding(true)}>Ajouter une pharmacie</Button>
+    {adding && <DirectoryEditor close={() => setAdding(false)} />}
     <SearchInput aria-label="Rechercher par nom ou ville" placeholder="Nom de pharmacie ou ville…" value={text} onChange={(e) => setText(e.target.value)} />
     <label className="block text-sm font-semibold">Ville
       <select aria-label="Ville des pharmacies" className="mt-1 h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground" value={city} onChange={(e) => { setCity(e.target.value); setPage(0); }}>
@@ -44,13 +50,19 @@ export function AdminPharmacies() {
 function AdminPharmacyCard({ pharmacy: p }: { pharmacy: Tables<"pharmacies"> }) {
   const client = useQueryClient();
   const [phone, setPhone] = useState(p.phone ?? "");
-  const [hours, setHours] = useState(p.opening_hours ?? "");
+  const [hours, setHours] = useState(p.habitual_hours ?? "");
+  const [editingDirectory, setEditingDirectory] = useState(false);
+  const [showRotations, setShowRotations] = useState(false);
+  const rotations = useQuery({ queryKey: ["duty-rotations", p.id], queryFn: async () => {
+    const { data, error } = await supabase.from("duty_rotations").select("*").eq("pharmacy_id", p.id).order("starts_at", { ascending: false }); if (error) throw error; return data ?? [];
+  }});
+  const currentDuty = activeDuty(rotations.data ?? []);
   const [editingDuty, setEditingDuty] = useState(false);
   const [publication, setPublication] = useState(p.duty_publication ?? "");
   const [starts, setStarts] = useState("");
   const [until, setUntil] = useState("");
   const [verified, setVerified] = useState(false);
-  const onDuty = p.is_on_duty && (!p.on_duty_until || new Date(p.on_duty_until).getTime() > Date.now());
+  const onDuty = currentDuty != null;
   const update = useMutation({
     mutationFn: async (kind: "contact" | "activate" | "disable") => {
       const args = kind === "contact" ? { p_update_contact: true, p_phone: normalizeSenegalPhone(phone) ?? "", p_opening_hours: hours.trim() }
@@ -76,7 +88,10 @@ function AdminPharmacyCard({ pharmacy: p }: { pharmacy: Tables<"pharmacies"> }) 
       <span className="font-semibold">De garde</span>
       <Switch aria-label={`De garde — ${p.name}`} checked={onDuty} disabled={update.isPending} onCheckedChange={(checked) => checked ? setEditingDuty(true) : update.mutate("disable")} />
     </div>
-    {onDuty && p.on_duty_until && <p className="mb-3 text-sm text-muted-foreground">Jusqu’au {new Date(p.on_duty_until).toLocaleString("fr-FR")}</p>}
+    {currentDuty && <p className="mb-3 text-sm text-muted-foreground">Jusqu’au {new Date(currentDuty.ends_at).toLocaleString("fr-FR")}</p>}
+    <div className="my-3 flex flex-wrap gap-2"><Button variant="outline" onClick={() => setEditingDirectory(true)}>Modifier les informations</Button><Button variant="outline" onClick={() => setShowRotations(v => !v)}>Rotations de garde</Button></div>
+    {editingDirectory && <DirectoryEditor pharmacy={p} close={() => setEditingDirectory(false)} />}
+    {showRotations && <RotationEditor pharmacyId={p.id} />}
     {editingDuty && <form className="mb-4 space-y-3 border-y border-border py-4" onSubmit={(e) => { e.preventDefault(); update.mutate("activate"); }}>
       <label className="block text-sm font-semibold">Publication de garde vérifiée<Input required value={publication} onChange={(e) => setPublication(e.target.value)} placeholder="Lien ou référence de la publication" /></label>
       <label className="block text-sm font-semibold">Début de garde<Input type="datetime-local" required value={starts} onChange={(e) => setStarts(e.target.value)} /></label>
@@ -86,7 +101,7 @@ function AdminPharmacyCard({ pharmacy: p }: { pharmacy: Tables<"pharmacies"> }) 
     </form>}
     <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); update.mutate("contact"); }}>
       <label className="block text-sm font-semibold">Téléphone<Input type="tel" aria-label={`Téléphone — ${p.name}`} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+221 33 000 00 00" /></label>
-      <label className="block text-sm font-semibold">Horaires d’ouverture<Input aria-label={`Horaires — ${p.name}`} value={hours} onChange={(e) => setHours(e.target.value)} /></label>
+      <label className="block text-sm font-semibold">Horaires habituels d’ouverture<Input aria-label={`Horaires — ${p.name}`} value={hours} onChange={(e) => setHours(e.target.value)} /></label>
       <Button type="submit" disabled={update.isPending} className="w-full"><Save className="h-4 w-4" />Enregistrer les coordonnées</Button>
     </form>
   </article>;
