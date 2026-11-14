@@ -43,6 +43,13 @@
       "when": 1794696572442,
       "tag": "0005_permanent_directory_and_duty_history",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794696749253,
+      "tag": "0006_directory_creation_and_consistent_duty_reads",
+      "breakpoints": true
     }
   ]
 }
