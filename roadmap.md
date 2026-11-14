@@ -1,5 +1,7 @@
 # GARDE — roadmap
 
+- [ ] Complete all currently active pharmacy directory records from DIMO detail pages, preserving conflicting evidence and separating habitual and duty schedules; verify public results.
+
 - [x] Enrich the demonstration directory from ten additional live DIMO details: five existing entries enriched, Cheikh Marie Saliou and Chifaoun added with dated rotations; three conflicting positions retained for review. Public search, phone links, dates and mobile details verified; existing demo stocks unchanged.
 
 - [x] Recover supplied directory lists as unverified candidates without overwriting conflicting existing contacts (23 previous rows and 22 newly cited rows retained).
