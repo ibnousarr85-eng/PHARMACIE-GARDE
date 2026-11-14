@@ -26,4 +26,12 @@ describe("Public directory filters", () => {
     const { error } = await supabase.rpc("admin_save_directory", { p_id: "00000000-0000-0000-0000-000000000000", p_data: {} });
     expect(error).not.toBeNull();
   });
+  it("finds both newly sourced DIMO pharmacies without inventing Chifaoun habitual hours", async () => {
+    for (const name of ["Pharmacie Cheikh Marie Saliou", "Pharmacie Chifaoun"]) {
+      const { data, error } = await supabase.rpc("search_pharmacy_directory", { ...base, p_search: name, p_on_duty: true, p_at: "2026-11-14T12:00:00Z" });
+      expect(error).toBeNull(); expect(data).toHaveLength(1);
+      expect(data?.[0]?.phone).toBe(name.includes("Chifaoun") ? "+221338231313" : "+221338221674");
+      if (name.includes("Chifaoun")) expect(data?.[0]?.opening_hours).toBeNull();
+    }
+  });
 });
