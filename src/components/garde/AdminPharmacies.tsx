@@ -14,6 +14,7 @@ import { adminPharmaciesQuery, DEFAULT_ADMIN_CITY, normalizeSenegalPhone, refres
 import { DirectoryEditor } from "@/components/garde/DirectoryEditor";
 import { RotationEditor } from "@/components/garde/RotationEditor";
 import { activeDuty } from "@/lib/duty";
+import { DirectoryCandidates } from "@/components/garde/DirectoryCandidates";
 
 export function AdminPharmacies() {
   const [adding, setAdding] = useState(false);
@@ -28,6 +29,7 @@ export function AdminPharmacies() {
   return <section className="space-y-4">
     <Button variant="outline" onClick={() => setAdding(true)}>Ajouter une pharmacie</Button>
     {adding && <DirectoryEditor close={() => setAdding(false)} />}
+    <DirectoryCandidates />
     <SearchInput aria-label="Rechercher par nom ou ville" placeholder="Nom de pharmacie ou ville…" value={text} onChange={(e) => setText(e.target.value)} />
     <label className="block text-sm font-semibold">Ville
       <select aria-label="Ville des pharmacies" className="mt-1 h-11 w-full rounded-lg border border-border bg-background px-3 text-foreground" value={city} onChange={(e) => { setCity(e.target.value); setPage(0); }}>
