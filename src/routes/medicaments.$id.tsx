@@ -1,15 +1,20 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, Pill } from "lucide-react";
+import { Loader2, Pill, Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DemoNotice } from "@/components/garde/DemoNotice";
+import { demoMedicinePharmaciesQuery } from "@/lib/demo-stock";
 import { AppShell, BackLink } from "@/components/garde/AppShell";
 import { PharmacyCard } from "@/components/garde/PharmacyCard";
 import { LocationPicker } from "@/components/garde/LocationPicker";
 import { getMedicinePublic } from "@/lib/public.functions";
 import { pharmaciesWithMedicineQuery } from "@/lib/pharmacies";
 import { DEFAULT_LOCATION, useUserLocation } from "@/lib/location";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, telHref } from "@/lib/format";
 
 export const Route = createFileRoute("/medicaments/$id")({
+  validateSearch: z.object({ demo: z.boolean().default(true) }),
   loader: async ({ params }) => {
     const m = await getMedicinePublic({ data: { id: params.id } });
     if (!m) throw notFound();
@@ -39,9 +44,12 @@ export const Route = createFileRoute("/medicaments/$id")({
 
 function MedicinePharmacies() {
   const m = Route.useLoaderData();
+  const { demo } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const { location } = useUserLocation();
   const loc = location ?? DEFAULT_LOCATION;
   const { data, isLoading } = useQuery(pharmaciesWithMedicineQuery(m.id, loc.lat, loc.lng));
+  const demoResult = useQuery({ ...demoMedicinePharmaciesQuery(m.id, loc.lat, loc.lng), enabled: demo });
 
   return (
     <AppShell>
@@ -54,11 +62,38 @@ function MedicinePharmacies() {
         {m.package ? ` • ${m.package}` : ""}
       </p>
 
+      <div className="flex flex-wrap gap-2" aria-label="Type de stock">
+        <Button variant={demo ? "default" : "outline"} aria-pressed={demo} onClick={() => navigate({ search: { demo: true } })}>Soutenance</Button>
+        <Button variant={!demo ? "default" : "outline"} aria-pressed={!demo} onClick={() => navigate({ search: { demo: false } })}>Stocks réels uniquement</Button>
+      </div>
+      {demo && <DemoNotice />}
+
       <div className="md:max-w-md">
         <LocationPicker />
       </div>
 
-      <h2 className="mb-3 mt-6 text-2xl font-bold text-foreground">Pharmacies avec du stock</h2>
+      {demo && (
+        <section>
+          <h2 className="mb-3 mt-6 text-2xl font-bold text-foreground">Stocks indicatifs — Soutenance</h2>
+          {demoResult.isLoading && <Loader2 aria-label="Chargement des stocks de démonstration" className="my-6 h-6 w-6 animate-spin text-primary" />}
+          {demoResult.isError && <p role="alert" className="my-4 text-destructive">Les stocks de démonstration n’ont pas pu être chargés.</p>}
+          {demoResult.data?.length === 0 && <p className="my-4 text-muted-foreground">Aucun stock de démonstration pour ce médicament.</p>}
+          <div className="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0 lg:grid-cols-3">
+            {demoResult.data?.map((p) => (
+              <PharmacyCard key={p.id} {...p} demo extra={
+                <div className="mt-3 border-l-4 border-primary bg-secondary p-3 text-sm text-secondary-foreground">
+                  <p className="font-bold">Données de démonstration (Soutenance)</p>
+                  <p className="mt-2 font-semibold">{p.quantity} unités fictives · {p.price_fcfa.toLocaleString("fr-FR")} FCFA indicatifs</p>
+                  <p className="mt-1 text-xs">Disponibilité non confirmée.</p>
+                  <p className="mt-2 text-xs">{p.duty_publication}</p>
+                  {p.phone && <Button asChild variant="outline" className="mt-3 w-full"><a href={telHref(p.phone)}><Phone className="h-4 w-4" />Appeler la pharmacie</a></Button>}
+                </div>
+              } />
+            ))}
+          </div>
+        </section>
+      )}
+      <h2 className="mb-3 mt-6 text-2xl font-bold text-foreground">Stocks réels déclarés</h2>
       {isLoading && (
         <div className="flex justify-center py-10">
           <Loader2 className="h-6 w-6 animate-spin text-primary" />
