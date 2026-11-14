@@ -1,5 +1,10 @@
 # GARDE — roadmap
 
+- [ ] Recover supplied directory lists as unverified candidates without overwriting conflicting existing contacts.
+- [ ] Separate permanent directory metadata and historic duty rotations; extend existing public search/detail and admin management without redesign.
+- [ ] Verify DIMO publication for 14 November 2026; do not invent confirmation or duty hours.
+- [ ] Test search filters, active dates, admin access controls and existing public UI.
+
 - [x] Add isolated Soutenance demo stocks to the eight audited pharmacies; verify medicine search, distance ordering, labels, real-only mode and phone links (28 tests pass, desktop/mobile flow checked).
 
 - [x] Harden GPS retries and precise errors; verify both home controls, mobile loading feedback, and all 25 tests.
