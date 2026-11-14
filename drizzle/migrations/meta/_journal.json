@@ -36,6 +36,13 @@
       "when": 1794696045844,
       "tag": "0004_separate_soutenance_stock",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794696572442,
+      "tag": "0005_permanent_directory_and_duty_history",
+      "breakpoints": true
     }
   ]
 }
