@@ -1,6 +1,6 @@
 # GARDE — roadmap
 
-- [ ] Add isolated Soutenance demo stocks to the eight audited pharmacies; verify medicine search, distance ordering, labels, real-only mode and phone links.
+- [x] Add isolated Soutenance demo stocks to the eight audited pharmacies; verify medicine search, distance ordering, labels, real-only mode and phone links (28 tests pass, desktop/mobile flow checked).
 
 - [x] Harden GPS retries and precise errors; verify both home controls, mobile loading feedback, and all 25 tests.
 
