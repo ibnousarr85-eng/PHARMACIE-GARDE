@@ -27,6 +27,7 @@ const searchSchema = z.object({
   region: fallback(z.string(), "").optional(),
   departement: fallback(z.string(), "").optional(),
   ville: fallback(z.string(), "").optional(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 });
 
 export const Route = createFileRoute("/pharmacies/")({
@@ -53,7 +54,8 @@ export const Route = createFileRoute("/pharmacies/")({
 });
 
 function PharmaciesPage() {
-  const { q, filtre: requestedFilter, region, departement, ville } = Route.useSearch();
+  const { q, filtre: requestedFilter, region, departement, ville, date } = Route.useSearch();
+  const [page, setPage] = useState(0);
   const filtre = FILTERS.some((filter) => filter.id === requestedFilter) ? requestedFilter : "toutes";
   const { data: geographicRows } = useSuspenseQuery(geographicOptionsQuery);
   const navigate = useNavigate({ from: "/pharmacies/" });
@@ -67,6 +69,7 @@ function PharmaciesPage() {
   }, [text]);
 
   const loc = location ?? DEFAULT_LOCATION;
+  useEffect(() => setPage(0), [debounced, region, departement, ville, date, filtre, loc.lat, loc.lng]);
   const { data, isLoading, error } = useQuery(
     nearbyPharmaciesQuery({
       lat: loc.lat,
@@ -79,6 +82,8 @@ function PharmaciesPage() {
       onDuty: filtre === "garde",
       withPhone: filtre === "telephone",
       limit: 40,
+      at: date,
+      offset: page * 40,
     }),
   );
 
@@ -140,6 +145,7 @@ function PharmaciesPage() {
         ))}
       </div>
 
+      {filtre === "garde" && <label className="mt-4 block text-sm font-semibold">Date de garde<input type="date" aria-label="Date de garde" value={date ?? new Date().toISOString().slice(0,10)} onChange={e => navigate({ search: s => ({ ...s, date: e.target.value || undefined }) })} className="ml-3 rounded-lg border border-border bg-background p-2 text-foreground" /></label>}
       <div className="md:mt-6 md:flex md:flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] lg:items-start lg:gap-8">
         <section className="min-w-0">
           <h2 className="mb-3 mt-6 text-2xl md:mt-0 font-bold text-foreground">{title}</h2>
@@ -163,6 +169,11 @@ function PharmaciesPage() {
             {data?.map((p) => (
               <PharmacyCard key={p.id} {...p} />
             ))}
+          </div>
+          <div className="mt-5 flex items-center justify-between gap-3">
+            <Button variant="outline" disabled={page === 0 || isLoading} onClick={() => setPage(p => p-1)}>Précédent</Button>
+            <span className="text-sm text-muted-foreground">Page {page+1}</span>
+            <Button variant="outline" disabled={isLoading || (data?.length ?? 0)<40} onClick={() => setPage(p => p+1)}>Suivant</Button>
           </div>
         </section>
 

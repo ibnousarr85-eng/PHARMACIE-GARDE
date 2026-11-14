@@ -27,6 +27,8 @@ export type NearbyFilters = {
   region?: string | undefined;
   department?: string | undefined;
   city?: string | undefined;
+  at?: string;
+  offset?: number;
 };
 
 export const nearbyPharmaciesQuery = (f: NearbyFilters) =>
@@ -39,6 +41,7 @@ export const nearbyPharmaciesQuery = (f: NearbyFilters) =>
         p_lat: number; p_lng: number; p_search?: string; p_max_km?: number;
         p_on_duty: boolean; p_with_phone: boolean; p_limit: number;
         p_region?: string; p_department?: string; p_city?: string;
+        p_at?: string; p_offset?: number;
       } = {
         p_lat: f.lat,
         p_lng: f.lng,
@@ -52,7 +55,9 @@ export const nearbyPharmaciesQuery = (f: NearbyFilters) =>
       if (f.region) args.p_region = f.region;
       if (f.department) args.p_department = f.department;
       if (f.city) args.p_city = f.city;
-      const { data, error } = await supabase.rpc("nearest_pharmacies_filtered", args);
+      if (f.at) args.p_at = `${f.at}T12:00:00Z`;
+      args.p_offset = f.offset ?? 0;
+      const { data, error } = await supabase.rpc("search_pharmacy_directory", args);
       if (error) throw error;
       return (data ?? []) as NearbyPharmacy[];
     },
