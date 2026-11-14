@@ -110,6 +110,45 @@ export type Database = {
         }
         Relationships: []
       }
+      pharmacy_demo_stock: {
+        Row: {
+          medicine_id: string
+          pharmacy_id: string
+          price_fcfa: number
+          quantity: number
+          updated_at: string
+        }
+        Insert: {
+          medicine_id: string
+          pharmacy_id: string
+          price_fcfa: number
+          quantity: number
+          updated_at?: string
+        }
+        Update: {
+          medicine_id?: string
+          pharmacy_id?: string
+          price_fcfa?: number
+          quantity?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pharmacy_demo_stock_medicine_id_fkey"
+            columns: ["medicine_id"]
+            isOneToOne: false
+            referencedRelation: "medicines"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pharmacy_demo_stock_pharmacy_id_fkey"
+            columns: ["pharmacy_id"]
+            isOneToOne: false
+            referencedRelation: "pharmacies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pharmacy_departments: {
         Row: {
           boundary: unknown
@@ -279,6 +318,26 @@ export type Database = {
           p_update_contact?: boolean
         }
         Returns: undefined
+      }
+      demo_pharmacies_with_medicine: {
+        Args: { p_lat: number; p_lng: number; p_medicine_id: string }
+        Returns: {
+          address: string
+          city: string
+          distance_km: number
+          duty_publication: string
+          id: string
+          lat: number
+          lng: number
+          locality: string
+          name: string
+          on_duty: boolean
+          opening_hours: string
+          phone: string
+          price_fcfa: number
+          quantity: number
+          stock_updated_at: string
+        }[]
       }
       distance_km: {
         Args: { lat1: number; lat2: number; lng1: number; lng2: number }

@@ -1,5 +1,7 @@
 # GARDE — roadmap
 
+- [ ] Add isolated Soutenance demo stocks to the eight audited pharmacies; verify medicine search, distance ordering, labels, real-only mode and phone links.
+
 - [x] Harden GPS retries and precise errors; verify both home controls, mobile loading feedback, and all 25 tests.
 
 - [x] Apply the supplied November DIMO rotation to eight unambiguous existing pharmacies and verify public duty results; eight absent or ambiguous identities left unchanged.

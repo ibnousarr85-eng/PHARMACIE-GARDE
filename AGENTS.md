@@ -19,6 +19,7 @@
 - Admin pharmacy edits use the field-limited `admin_update_pharmacy` RPC, which verifies the caller role and validates duty publication dates and phone format; public lists poll every 15 seconds and mutation caches are invalidated to keep changes visible without widening owner permissions.
 - Navigation (bottom tab bar below `md`, `TopNav` header at `md+`) and the `BackLink` pill live in `AppShell`, so every page gets the same navigation.
 - Stock writes go straight from the browser with RLS checking pharmacy ownership; no server function needed.
+- Soutenance stock lives only in pharmacy_demo_stock with read-only public access; separate demo queries and labeled UI keep synthetic quantities/prices out of real availability and pharmacist inventory. Demo results retain real duty dates and phone numbers.
 - User position lives in `LocationProvider` (src/lib/location.tsx), persisted in localStorage, with a city fallback list when GPS is denied.
 - GPS requests retry unavailable or timed-out high-accuracy fixes once at lower accuracy, but never retry denied permission, so mobile failures recover without repeated permission requests.
 - Public detail pages load via `src/lib/public.functions.ts` (publishable-key server client) so SSR can set per-page titles.
