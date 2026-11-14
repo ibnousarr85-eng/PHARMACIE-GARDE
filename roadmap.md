@@ -1,5 +1,7 @@
 # GARDE — roadmap
 
+- [ ] Enrich the demonstration directory from additional live DIMO pharmacy details, preserving source evidence, exact locations and existing contacts; verify public search and details.
+
 - [x] Recover supplied directory lists as unverified candidates without overwriting conflicting existing contacts (23 previous rows and 22 newly cited rows retained).
 - [x] Separate permanent directory metadata and historic duty rotations; extend existing public search/detail and admin management without redesign.
 - [x] Verify DIMO publication for 14 November 2026: all 95 source entries archived, 31 uniquely matched rotations imported for 14–21 November; 64 identities await exact location/identity checks, never invented.
