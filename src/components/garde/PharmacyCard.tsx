@@ -60,7 +60,7 @@ export function PharmacyCard(p: Props) {
       {p.extra}
       <div className="flex-1" />
       <Button asChild size="lg" className="mt-4 h-12 w-full rounded-2xl text-base font-bold">
-        <Link to="/pharmacies/$id" params={{ id: p.id }} search={{ demo: p.demo ?? false }}>
+        <Link to="/pharmacies/$id" params={{ id: p.id }} search={{ demo: p.demo ?? true }}>
           Voir les détails
         </Link>
       </Button>
