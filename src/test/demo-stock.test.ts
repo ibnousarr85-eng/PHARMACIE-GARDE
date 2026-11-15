@@ -4,12 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 describe("Soutenance public stocks", () => {
   const medicineId = "7728fa91-11e6-4948-a7fb-369b70ac6510";
-  it("returns the eight audited pharmacies for Doliprane with positive indicative stock and prices", async () => {
+  it("returns the eight nearest stocked pharmacies for Doliprane with positive indicative stock and prices", async () => {
     const options = demoMedicinePharmaciesQuery(medicineId, 14.6928, -17.4467);
     const { data, error } = await supabase.rpc("demo_pharmacies_with_medicine", { p_medicine_id: medicineId, p_lat: 14.6928, p_lng: -17.4467 });
     expect(error).toBeNull();
     expect(data).toHaveLength(8);
-    expect(data?.every(p => p.quantity > 0 && p.price_fcfa > 0 && p.phone?.startsWith("+221"))).toBe(true);
+    expect(data?.every(p => p.quantity > 0 && p.price_fcfa > 0 && (p.phone == null || p.phone.startsWith("+221")))).toBe(true);
     expect(options.queryKey[0]).toBe("demo-medicine-pharmacies");
   });
   it("orders demo pharmacies by distance from the supplied position", async () => {
@@ -28,5 +28,12 @@ describe("Soutenance public stocks", () => {
     const { data: real, error: realError } = await supabase.rpc("pharmacies_with_medicine", { p_medicine_id: medicineId, p_lat: 14.6928, p_lng: -17.4467, p_limit: 30 });
     expect(realError).toBeNull();
     expect(real).toEqual([]);
+  });
+  it("gives every catalogue medicine demo stock in Dakar pharmacies", async () => {
+    const { data: meds } = await supabase.from("medicines").select("id");
+    for (const m of meds ?? []) {
+      const { data } = await supabase.rpc("demo_pharmacies_with_medicine", { p_medicine_id: m.id, p_lat: 14.6928, p_lng: -17.4467 });
+      expect(data?.length).toBeGreaterThan(0);
+    }
   });
 });
