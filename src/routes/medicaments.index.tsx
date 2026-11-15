@@ -7,7 +7,6 @@ import { AppShell, BackLink } from "@/components/garde/AppShell";
 import { Chip, SearchInput } from "@/components/garde/SearchInput";
 import { Button } from "@/components/ui/button";
 import { medicineSearchQuery } from "@/lib/pharmacies";
-import { DemoNotice } from "@/components/garde/DemoNotice";
 
 const QUICK = ["Doliprane", "Coartem", "Spasfon", "Amoxicilline", "Smecta"];
 
@@ -39,7 +38,6 @@ function MedicinesPage() {
       <BackLink to="/" />
       <h1 className="mt-3 text-[30px] font-extrabold tracking-tight text-foreground md:text-4xl">Rechercher un médicament</h1>
       <p className="mb-5 text-muted-foreground">Trouvez les pharmacies proches qui l'ont en stock.</p>
-      <DemoNotice />
 
       <form
         onSubmit={(e) => {
