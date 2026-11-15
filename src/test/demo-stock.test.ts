@@ -8,15 +8,15 @@ describe("Soutenance public stocks", () => {
     const options = demoMedicinePharmaciesQuery(medicineId, 14.6928, -17.4467);
     const { data, error } = await supabase.rpc("demo_pharmacies_with_medicine", { p_medicine_id: medicineId, p_lat: 14.6928, p_lng: -17.4467 });
     expect(error).toBeNull();
-    expect(data).toHaveLength(8);
-    expect(data?.every(p => p.quantity > 0 && p.price_fcfa > 0 && (p.phone == null || p.phone.startsWith("+221")))).toBe(true);
+    expect(data).toHaveLength(12);
+    expect(data?.every(p => p.quantity > 0 && p.price_fcfa > 0 && p.phone?.startsWith("+221") && !!p.address && !!p.opening_hours)).toBe(true);
     expect(options.queryKey[0]).toBe("demo-medicine-pharmacies");
   });
   it("orders demo pharmacies by distance from the supplied position", async () => {
     const { data, error } = await supabase.rpc("demo_pharmacies_with_medicine", { p_medicine_id: medicineId, p_lat: 14.6928, p_lng: -17.4467 });
     expect(error).toBeNull();
     const distances = data?.map(p => p.distance_km) ?? [];
-    expect(distances.length).toBe(8);
+    expect(distances.length).toBe(12);
     expect(distances).toEqual([...distances].sort((a,b) => a-b));
   });
   it("keeps demo inventory separate from real stock queries", async () => {

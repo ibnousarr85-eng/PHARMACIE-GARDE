@@ -50,6 +50,13 @@
       "when": 1794696749253,
       "tag": "0006_directory_creation_and_consistent_duty_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794701848138,
+      "tag": "0007_demo_stock_complete_pharmacies",
+      "breakpoints": true
     }
   ]
 }
