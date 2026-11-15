@@ -11,7 +11,7 @@ import { DemoNotice } from "@/components/garde/DemoNotice";
 import { demoPharmacyStockQuery } from "@/lib/demo-stock";
 
 export const Route = createFileRoute("/pharmacies/$id")({
-  validateSearch: z.object({ demo: z.boolean().default(false) }),
+  validateSearch: z.object({ demo: z.boolean().default(true) }),
   loader: async ({ params }) => {
     const pharmacy = await getPharmacyPublic({ data: { id: params.id } });
     if (!pharmacy) throw notFound();
