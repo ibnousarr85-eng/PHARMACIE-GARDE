@@ -1,5 +1,8 @@
 # GARDE — roadmap
 
+- [x] Audit Toutes, Moins de 2 km and Avec téléphone; enrich ten sourced Ouest Foire entries, including two new complete schedules and phones. Eleven tests pass; mobile category clicks, enriched detail and tel link verified without hiding incomplete pharmacies.
+- [ ] Complete remaining directory details — Ouest Foire has 23/46 complete entries (7 missing phones, 23 missing schedules); Sacré-Cœur has 33/66 complete (17 missing phones, 33 missing schedules). Blocked by missing/malformed DIMO publications and unresolved identities; requires pharmacy confirmation or another reliable source.
+
 - [x] Check all 34 active pharmacy DIMO pages: all now have phones and addresses, 26 have complete habitual schedules; eight absent/malformed/homonymous schedules remain unknown. Archive evidence and additional numbers; show uncertain published hours separately. Twelve targeted tests pass; search/detail/calls and mobile rendering verified.
 - [ ] Complete eight remaining habitual schedules — blocked by missing/malformed DIMO hours (Renaissance, Fass, Sud Foire, Mandela, Centrale, Chifaoun, Moderne) and a Thiès homonym linked to Principale in Pikine; requires corrected publication or pharmacy confirmation.
 
