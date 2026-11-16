@@ -3,6 +3,17 @@ import { supabase } from "@/integrations/supabase/client";
 
 describe("Public directory filters", () => {
   const base = { p_lat: 14.6928, p_lng: -17.4467, p_limit: 200 };
+  it("exposes the sourced Fatou Ideu phone and complete schedule through all three Ouest Foire categories", async () => {
+    const position = { p_lat: 14.7445, p_lng: -17.468, p_limit: 200 };
+    for (const filter of [{}, { p_max_km: 2 }, { p_with_phone: true }]) {
+      const { data, error } = await supabase.rpc("search_pharmacy_directory", { ...position, ...filter });
+      expect(error).toBeNull();
+      const pharmacy = data?.find(p => p.id === "c34bff31-999b-49a0-a8af-eae0494d7683");
+      expect(pharmacy?.phone).toBe("+221338278720");
+      expect(pharmacy?.opening_hours).toBe("Ouvert tous les jours, 7h – 23h.");
+      expect(pharmacy?.address).toBe("Rue GY 316, Grand Yoff, Dakar");
+    }
+  });
   it("finds the permanent directory by neighborhood and returns distances within 2 km", async () => {
     const { data, error } = await supabase.rpc("search_pharmacy_directory", { ...base, p_search: "Plateau" });
     expect(error).toBeNull(); expect((data ?? []).length).toBeGreaterThan(0);
